@@ -1,2 +1,0 @@
-# QrokeeSlide
-Created with CodeSandbox
