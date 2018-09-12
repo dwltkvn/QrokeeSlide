@@ -11,11 +11,13 @@ class ThreeTest extends React.Component {
     this.animObj = {
       moveX: false,
       moveY: false,
+      rotate: 0,
       t: 0,
       tDelta: 0.1
     };
 
-    this.displaySize = 0.5; // default : 0.5
+    this.displaySize = 1; // default : 0.5
+    this.rotationOrientation = 0;
 
     this.onResize = this.onResize.bind(this);
     this.onDoubleTap = this.onDoubleTap.bind(this);
@@ -76,7 +78,7 @@ class ThreeTest extends React.Component {
     // GEOMETRY - Create our only geometry: a cube.
     //const geometry = new THREE.BoxGeometry(1, 1, 1);
     const geometry = new THREE.PlaneGeometry(0.99, 0.99, 0.99);
-    const markerGeom = new THREE.CircleGeometry(0.1, 8);
+    const markerGeom = new THREE.CircleGeometry(0.1, 3);
 
     // MATERIAL - create the default material (red cube) and selected material (white cube) + create a material for each color of the palette passed via props.
     const material = new THREE.MeshLambertMaterial({
@@ -183,6 +185,16 @@ class ThreeTest extends React.Component {
       }
     }
 
+    if (this.animObj.rotate > 0) {
+      this.camera.rotateZ(this.animObj.tDelta /*Math.PI / 2*/);
+      this.animObj.rotate -= this.animObj.tDelta;
+
+      if (this.animObj.rotate < this.animObj.tDelta) {
+        this.camera.rotateZ(this.animObj.rotate);
+        this.animObj.rotate = 0;
+      }
+    }
+
     this.renderer.render(this.scene, this.camera);
   }
 
@@ -207,10 +219,17 @@ class ThreeTest extends React.Component {
 
   onDoubleTap() {
     console.log("double");
+    //this.camera.rotateZ(Math.PI / 2);
+    this.animObj.rotate = Math.PI / 2;
+    this.rotationOrientation = (this.rotationOrientation + 1) % 4;
   }
 
   translateX(delta) {
-    if (this.animObj.moveX === false && this.animObj.moveY === false) {
+    if (
+      this.animObj.moveX === false &&
+      this.animObj.moveY === false &&
+      this.animObj.rotate === 0
+    ) {
       this.animObj.moveX = true;
       this.animObj.start = this.camera.position.x;
       this.animObj.end = this.camera.position.x + delta;
@@ -219,7 +238,11 @@ class ThreeTest extends React.Component {
   }
 
   translateY(delta) {
-    if (this.animObj.moveY === false && this.animObj.moveX === false) {
+    if (
+      this.animObj.moveY === false &&
+      this.animObj.moveX === false &&
+      this.animObj.rotate === 0
+    ) {
       this.animObj.moveY = true;
       this.animObj.start = this.camera.position.y;
       this.animObj.end = this.camera.position.y + delta;
@@ -228,19 +251,32 @@ class ThreeTest extends React.Component {
   }
 
   onSwipeLeft() {
-    this.translateX(+0.5);
+    //this.translateX(+0.5);
+    if (this.rotationOrientation === 0) this.translateX(+0.5);
+    else if (this.rotationOrientation === 1) this.translateY(+0.5);
+    else if (this.rotationOrientation === 2) this.translateX(-0.5);
+    else if (this.rotationOrientation === 3) this.translateY(-0.5);
   }
 
   onSwipeRight() {
-    this.translateX(-0.5);
+    if (this.rotationOrientation === 0) this.translateX(-0.5);
+    else if (this.rotationOrientation === 1) this.translateY(-0.5);
+    else if (this.rotationOrientation === 2) this.translateX(0.5);
+    else if (this.rotationOrientation === 3) this.translateY(0.5);
   }
 
   onSwipeUp() {
-    this.translateY(-0.5);
+    if (this.rotationOrientation === 0) this.translateY(-0.5);
+    else if (this.rotationOrientation === 1) this.translateX(+0.5);
+    else if (this.rotationOrientation === 2) this.translateY(+0.5);
+    else if (this.rotationOrientation === 3) this.translateX(-0.5);
   }
 
   onSwipeDown() {
-    this.translateY(+0.5);
+    if (this.rotationOrientation === 0) this.translateY(+0.5);
+    else if (this.rotationOrientation === 1) this.translateX(-0.5);
+    else if (this.rotationOrientation === 2) this.translateY(-0.5);
+    else if (this.rotationOrientation === 3) this.translateX(+0.5);
   }
 
   render() {
