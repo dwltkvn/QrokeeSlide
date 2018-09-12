@@ -1,15 +1,25 @@
 import React from "react";
 import * as THREE from "three";
 
+import Hammer from "hammerjs";
+
 class ThreeTest extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
 
     this.onResize = this.onResize.bind(this);
+    this.onDoubleTap = this.onDoubleTap.bind(this);
   }
 
   componentDidMount() {
+    this.hammertime = new Hammer.Manager(this.canvas, {
+      recognizers: [
+        // RecognizerClass, [options], [recognizeWith, ...], [requireFailure, ...]
+        [Hammer.Tap, { event: "doubletap", taps: 2 }]
+      ]
+    });
+
     const scene = (this.scene = new THREE.Scene());
     scene.background = new THREE.Color(0xf0f0f0);
 
@@ -23,24 +33,16 @@ class ThreeTest extends React.Component {
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     // CAMERA creation and configuraiton
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    /*const camera = (this.camera = new THREE.OrthographicCamera(
-      width / -2,
-      width / 2,
-      height / 2,
-      height / -2,
-      1,
-      1000
-    ));*/
-
-    this.frustumSize = 1;
-    const aspect = window.innerWidth / window.innerHeight;
+    let portraitAspect = window.innerWidth / window.innerHeight;
+    let landscapeAspect = window.innerHeight / window.innerWidth;
+    window.innerHeight > window.innerWidth
+      ? (portraitAspect = 1)
+      : (landscapeAspect = 1);
     const camera = (this.camera = new THREE.OrthographicCamera(
-      (this.frustumSize * aspect) / -2,
-      (this.frustumSize * aspect) / 2,
-      this.frustumSize / 2,
-      this.frustumSize / -2,
+      -0.5 * portraitAspect,
+      0.5 * portraitAspect,
+      0.5 * landscapeAspect,
+      -0.5 * landscapeAspect,
       0,
       2000
     ));
@@ -93,6 +95,8 @@ class ThreeTest extends React.Component {
 
     // EVENT LISTENER - connect event to their respective slots.
     window.addEventListener("resize", this.onResize);
+
+    this.hammertime.on("doubletap", () => this.onDoubleTap());
   }
 
   componentWillUnmount() {
@@ -101,13 +105,21 @@ class ThreeTest extends React.Component {
   }
 
   onResize(e) {
-    const aspect = window.innerWidth / window.innerHeight;
-    this.camera.left = (-this.frustumSize * aspect) / 2;
-    this.camera.right = (this.frustumSize * aspect) / 2;
-    this.camera.top = this.frustumSize / 2;
-    this.camera.bottom = -this.frustumSize / 2;
+    let portraitAspect = window.innerWidth / window.innerHeight;
+    let landscapeAspect = window.innerHeight / window.innerWidth;
+    window.innerHeight > window.innerWidth
+      ? (portraitAspect = 1)
+      : (landscapeAspect = 1);
+    this.camera.left = -0.5 * portraitAspect;
+    this.camera.right = 0.5 * portraitAspect;
+    this.camera.top = 0.5 * landscapeAspect;
+    this.camera.bottom = -0.5 * landscapeAspect;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+
+  onDoubleTap() {
+    console.log("double");
   }
 
   render() {
