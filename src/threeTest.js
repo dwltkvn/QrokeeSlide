@@ -10,6 +10,16 @@ class ThreeTest extends React.Component {
 
     this.onResize = this.onResize.bind(this);
     this.onDoubleTap = this.onDoubleTap.bind(this);
+
+    this.onSwipeLeft = this.onSwipeLeft.bind(this);
+    this.onSwipeRight = this.onSwipeRight.bind(this);
+    this.onSwipeUp = this.onSwipeUp.bind(this);
+    this.onSwipeDown = this.onSwipeDown.bind(this);
+
+    this.translateX = this.translateX.bind(this);
+    this.translateY = this.translateY.bind(this);
+
+    this.onAnim = this.onAnim.bind(this);
   }
 
   componentDidMount() {
@@ -17,6 +27,13 @@ class ThreeTest extends React.Component {
       recognizers: [
         // RecognizerClass, [options], [recognizeWith, ...], [requireFailure, ...]
         [Hammer.Tap, { event: "doubletap", taps: 2 }]
+      ]
+    });
+
+    this.hammerswipe = new Hammer.Manager(this.canvas, {
+      recognizers: [
+        // RecognizerClass, [options], [recognizeWith, ...], [requireFailure, ...]
+        [Hammer.Swipe, {}]
       ]
     });
 
@@ -47,12 +64,9 @@ class ThreeTest extends React.Component {
       2000
     ));
 
-    //camera.position.z = 1;
-    //camera.position.y = 400;
-
     // GEOMETRY - Create our only geometry: a cube.
     //const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const geometry = new THREE.PlaneGeometry(0.99, 0.99, 0.99);
+    const geometry = new THREE.PlaneGeometry(0.9, 0.9, 0.9);
 
     // MATERIAL - create the default material (red cube) and selected material (white cube) + create a material for each color of the palette passed via props.
     const material = new THREE.MeshLambertMaterial({
@@ -65,6 +79,13 @@ class ThreeTest extends React.Component {
     const cube = new THREE.Mesh(geometry, material); //cubes.clone();
     cube.position.set(0, 0, 0);
     scene.add(cube);
+
+    this.animObj = {
+      moveX: false,
+      moveY: false,
+      t: 0,
+      tDelta: 0.1
+    };
 
     const cube2 = cube.clone();
     cube2.position.set(1, 0, 0);
@@ -83,20 +104,51 @@ class ThreeTest extends React.Component {
     scene.add(light_a);
 
     // ANIMATION FRAME - initiate the request animation frame and call it a first time to start the loop.
-    const animate = function() {
-      requestAnimationFrame(animate);
-
-      const f1 = Date.now() / 1000;
-      //cube.rotation.x = Math.sin(f1);
-      //cube.rotation.y = Math.cos(f1);
-      renderer.render(scene, camera);
-    };
-    animate();
+    this.onAnim();
 
     // EVENT LISTENER - connect event to their respective slots.
     window.addEventListener("resize", this.onResize);
-
     this.hammertime.on("doubletap", () => this.onDoubleTap());
+    this.hammerswipe.on("swipeleft", () => this.onSwipeLeft());
+    this.hammerswipe.on("swiperight", () => this.onSwipeRight());
+    this.hammerswipe.on("swipeup", () => this.onSwipeUp());
+    this.hammerswipe.on("swipedown", () => this.onSwipeDown());
+  }
+
+  onAnim() {
+    requestAnimationFrame(this.onAnim);
+
+    this.animObj.t = THREE.Math.clamp(
+      this.animObj.t + this.animObj.tDelta,
+      0,
+      1.0
+    );
+
+    if (this.animObj.moveX === true) {
+      this.camera.position.x = THREE.Math.lerp(
+        this.animObj.start,
+        this.animObj.end,
+        this.animObj.t
+      );
+      if (this.camera.position.x >= this.animObj.end) {
+        this.animObj.moveX = false;
+        this.camera.position.x = this.animObj.end;
+      }
+    }
+
+    if (this.animObj.moveY === true) {
+      this.camera.position.y = THREE.Math.lerp(
+        this.animObj.start,
+        this.animObj.end,
+        this.animObj.t
+      );
+      if (this.camera.position.y >= this.animObj.end) {
+        this.animObj.moveY = false;
+        this.camera.position.y = this.animObj.end;
+      }
+    }
+
+    this.renderer.render(this.scene, this.camera);
   }
 
   componentWillUnmount() {
@@ -120,6 +172,40 @@ class ThreeTest extends React.Component {
 
   onDoubleTap() {
     console.log("double");
+  }
+
+  translateX(delta) {
+    if (this.animObj.moveX === false && this.animObj.moveY === false) {
+      this.animObj.moveX = true;
+      this.animObj.start = this.camera.position.x;
+      this.animObj.end = this.camera.position.x + delta;
+      this.animObj.t = 0;
+    }
+  }
+
+  translateY(delta) {
+    if (this.animObj.moveY === false && this.animObj.moveX === false) {
+      this.animObj.moveY = true;
+      this.animObj.start = this.camera.position.y;
+      this.animObj.end = this.camera.position.y + delta;
+      this.animObj.t = 0;
+    }
+  }
+
+  onSwipeLeft() {
+    this.translateX(+0.5);
+  }
+
+  onSwipeRight() {
+    this.translateX(-0.5);
+  }
+
+  onSwipeUp() {
+    this.translateY(-0.5);
+  }
+
+  onSwipeDown() {
+    this.translateY(+0.5);
   }
 
   render() {
