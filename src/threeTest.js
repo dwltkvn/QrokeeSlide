@@ -8,6 +8,15 @@ class ThreeTest extends React.Component {
     super(props);
     this.state = {};
 
+    this.animObj = {
+      moveX: false,
+      moveY: false,
+      t: 0,
+      tDelta: 0.1
+    };
+
+    this.displaySize = 0.5; // default : 0.5
+
     this.onResize = this.onResize.bind(this);
     this.onDoubleTap = this.onDoubleTap.bind(this);
 
@@ -56,41 +65,67 @@ class ThreeTest extends React.Component {
       ? (portraitAspect = 1)
       : (landscapeAspect = 1);
     const camera = (this.camera = new THREE.OrthographicCamera(
-      -0.5 * portraitAspect,
-      0.5 * portraitAspect,
-      0.5 * landscapeAspect,
-      -0.5 * landscapeAspect,
+      -this.displaySize * portraitAspect,
+      this.displaySize * portraitAspect,
+      this.displaySize * landscapeAspect,
+      -this.displaySize * landscapeAspect,
       0,
       2000
     ));
 
     // GEOMETRY - Create our only geometry: a cube.
     //const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const geometry = new THREE.PlaneGeometry(0.9, 0.9, 0.9);
+    const geometry = new THREE.PlaneGeometry(0.99, 0.99, 0.99);
+    const markerGeom = new THREE.CircleGeometry(0.1, 8);
 
     // MATERIAL - create the default material (red cube) and selected material (white cube) + create a material for each color of the palette passed via props.
     const material = new THREE.MeshLambertMaterial({
       color: 0xff0000
     });
 
-    // MESH - create the model cube that will be cloned to create its others siblings
-    //const cubes = new THREE.Mesh(geometry, material);
+    const markerMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffff00,
+      wireframe: false
+    });
 
+    // MESH - create the model cube that will be cloned to create its others siblings
     const cube = new THREE.Mesh(geometry, material); //cubes.clone();
     cube.position.set(0, 0, 0);
     scene.add(cube);
-
-    this.animObj = {
-      moveX: false,
-      moveY: false,
-      t: 0,
-      tDelta: 0.1
-    };
 
     const cube2 = cube.clone();
     cube2.position.set(1, 0, 0);
     scene.add(cube2);
 
+    const cube3 = cube.clone();
+    cube3.position.set(0, -1, 0);
+    scene.add(cube3);
+
+    const cube4 = cube.clone();
+    cube4.position.set(1, -1, 0);
+    scene.add(cube4);
+
+    const circle = new THREE.Mesh(markerGeom, markerMaterial);
+
+    for (let x of [-0.5, 0.5, 1.5]) {
+      for (let y of [-1.5, -0.5, 0.5]) {
+        const c = circle.clone();
+        c.position.set(x, y, 0);
+        scene.add(c);
+      }
+    }
+    /*
+    circle.position.set(0.5, 0.5, 0);
+    scene.add(circle);
+
+    const c2 = circle.clone();
+    c2.position.set(-0.5, 0.5, 0);
+    scene.add(c2);
+
+    const c3 = circle.clone();
+    c3.position.set(-0.5, -0.5, 0);
+    scene.add(c3);
+*/
     // LIGHT - use two light at opposed position and at cube corner.
     const light_p = new THREE.PointLight(0xffffff);
     light_p.position.set(10, 10, 10);
@@ -130,7 +165,7 @@ class ThreeTest extends React.Component {
         this.animObj.end,
         this.animObj.t
       );
-      if (this.camera.position.x >= this.animObj.end) {
+      if (this.camera.position.x === this.animObj.end) {
         this.animObj.moveX = false;
         this.camera.position.x = this.animObj.end;
       }
@@ -142,7 +177,7 @@ class ThreeTest extends React.Component {
         this.animObj.end,
         this.animObj.t
       );
-      if (this.camera.position.y >= this.animObj.end) {
+      if (this.camera.position.y === this.animObj.end) {
         this.animObj.moveY = false;
         this.camera.position.y = this.animObj.end;
       }
@@ -162,10 +197,10 @@ class ThreeTest extends React.Component {
     window.innerHeight > window.innerWidth
       ? (portraitAspect = 1)
       : (landscapeAspect = 1);
-    this.camera.left = -0.5 * portraitAspect;
-    this.camera.right = 0.5 * portraitAspect;
-    this.camera.top = 0.5 * landscapeAspect;
-    this.camera.bottom = -0.5 * landscapeAspect;
+    this.camera.left = -this.displaySize * portraitAspect;
+    this.camera.right = this.displaySize * portraitAspect;
+    this.camera.top = this.displaySize * landscapeAspect;
+    this.camera.bottom = -this.displaySize * landscapeAspect;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
