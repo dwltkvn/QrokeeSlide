@@ -16,7 +16,7 @@ class ThreeTest extends React.Component {
       tDelta: 0.1
     };
 
-    this.displaySize = 1; // default : 0.5
+    this.displaySize = 0.5; // default : 0.5
     this.rotationOrientation = 0;
 
     this.onResize = this.onResize.bind(this);
