@@ -2,6 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import ThreeRenderer from "./threeTest";
+import SelectPage from "./selectpage";
+
+import { BrowserRouter, Route, Link } from "react-router-dom";
+
 //import { withStyles } from "@material-ui/core/styles";
 
 //const CmpntStateless = props => <div>{props.children}</div>;
@@ -39,9 +43,26 @@ class App extends React.Component {
     const { classes } = this.props;
 
     return (
-      <div>
-        <ThreeRenderer />
-      </div>
+      <BrowserRouter>
+        <div>
+          <Route
+            exact
+            path="/"
+            render={() => (
+              <SelectPage
+                cbStoreImgData={data => {
+                  this.setState({ imgData: data });
+                  console.log(data);
+                }}
+              />
+            )}
+          />
+          <Route
+            path="/qrokee"
+            render={() => <ThreeRenderer propImgData={this.state.imgData} />}
+          />
+        </div>
+      </BrowserRouter>
     );
   }
 }

@@ -49,6 +49,25 @@ class ThreeTest extends React.Component {
       ]
     });
 
+    // load ressoures, then build three js scene
+    //const img = new THREE.ImageLoader().load(kdoimg, i => this.buildThree(i));
+    const img = new THREE.ImageLoader().load(
+      this.props.propImgData,
+      i => this.buildThree(i),
+      undefined,
+      () => console.log("Error on image load")
+    );
+
+    // EVENT LISTENER - connect event to their respective slots.
+    window.addEventListener("resize", this.onResize);
+    this.hammertime.on("doubletap", () => this.onDoubleTap());
+    this.hammerswipe.on("swipeleft", () => this.onSwipeLeft());
+    this.hammerswipe.on("swiperight", () => this.onSwipeRight());
+    this.hammerswipe.on("swipeup", () => this.onSwipeUp());
+    this.hammerswipe.on("swipedown", () => this.onSwipeDown());
+  }
+
+  buildThree(myImg) {
     const scene = (this.scene = new THREE.Scene());
     scene.background = new THREE.Color(0x000000);
 
@@ -91,7 +110,7 @@ class ThreeTest extends React.Component {
       wireframe: false
     });
 
-    const texture = new THREE.TextureLoader().load(kdoimg);
+    //const texture = new THREE.TextureLoader().load(kdoimg);
 
     // texture from canvas:
 
@@ -103,34 +122,34 @@ class ThreeTest extends React.Component {
 
     //create in memory canvas
     const sImg = 768;
-    const img = new THREE.ImageLoader().load(kdoimg);
+    //const img = new THREE.ImageLoader().load(kdoimg);
 
     let canvas2 = document.createElement("canvas");
     let context2 = canvas2.getContext("2d");
     canvas2.width = sImg / 2;
     canvas2.height = sImg / 2;
-    context2.drawImage(img, 0, 0);
+    context2.drawImage(myImg, 0, 0);
     const canvasTexture2 = new THREE.CanvasTexture(canvas2);
 
     let canvas3 = document.createElement("canvas");
     let context3 = canvas3.getContext("2d");
     canvas3.width = sImg / 2;
     canvas3.height = sImg / 2;
-    context3.drawImage(img, -sImg / 2, 0);
+    context3.drawImage(myImg, -sImg / 2, 0);
     const canvasTexture3 = new THREE.CanvasTexture(canvas3);
 
     let canvas4 = document.createElement("canvas");
     let context4 = canvas4.getContext("2d");
     canvas4.width = sImg / 2;
     canvas4.height = sImg / 2;
-    context4.drawImage(img, 0, -sImg / 2);
+    context4.drawImage(myImg, 0, -sImg / 2);
     const canvasTexture4 = new THREE.CanvasTexture(canvas4);
 
     let canvas5 = document.createElement("canvas");
     let context5 = canvas5.getContext("2d");
     canvas5.width = sImg / 2;
     canvas5.height = sImg / 2;
-    context5.drawImage(img, -sImg / 2, -sImg / 2);
+    context5.drawImage(myImg, -sImg / 2, -sImg / 2);
     const canvasTexture5 = new THREE.CanvasTexture(canvas5);
 
     var textureMaterial2 = new THREE.MeshBasicMaterial({
@@ -190,14 +209,6 @@ class ThreeTest extends React.Component {
 
     // ANIMATION FRAME - initiate the request animation frame and call it a first time to start the loop.
     this.onAnim();
-
-    // EVENT LISTENER - connect event to their respective slots.
-    window.addEventListener("resize", this.onResize);
-    this.hammertime.on("doubletap", () => this.onDoubleTap());
-    this.hammerswipe.on("swipeleft", () => this.onSwipeLeft());
-    this.hammerswipe.on("swiperight", () => this.onSwipeRight());
-    this.hammerswipe.on("swipeup", () => this.onSwipeUp());
-    this.hammerswipe.on("swipedown", () => this.onSwipeDown());
   }
 
   onAnim() {

@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 const styles = theme => ({
   className0: {}
@@ -22,7 +23,7 @@ class SelectPage extends React.Component {
     //this.handleEvent = this.handleEvent.bind(this);
     this.onFilesSelected = this.onFilesSelected.bind(this);
     this.onFileLoaded = this.onFileLoaded.bind(this);
-    this.onClick = this.onClick.bind(this);
+    this.displaySelectedImage = this.displaySelectedImage.bind(this);
 
     this.state = {};
   }
@@ -41,7 +42,7 @@ class SelectPage extends React.Component {
   }
   */
 
-  onClick() {
+  displaySelectedImage() {
     const c = this.canvasRef;
     const ctx = c.getContext("2d");
 
@@ -50,11 +51,12 @@ class SelectPage extends React.Component {
     img.src = this.imgData;
 
     this.imageRef.src = this.imgData;
+    this.props.cbStoreImgData(this.imgData);
   }
 
   onFileLoaded(e) {
     this.imgData = e.target.result;
-    this.onClick();
+    this.displaySelectedImage();
   }
 
   onFilesSelected(e) {
@@ -96,9 +98,7 @@ class SelectPage extends React.Component {
           alt="Aperçu de l’image..."
           ref={elem => (this.imageRef = elem)}
         />
-        <button type="button" onClick={() => this.onClick()}>
-          Click Me!
-        </button>
+        <Link to="/qrokee">Continue !</Link>
       </div>
     );
   }
