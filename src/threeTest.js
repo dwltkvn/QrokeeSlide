@@ -2,6 +2,7 @@ import React from "react";
 import * as THREE from "three";
 
 import Hammer from "hammerjs";
+import kdoimg from "./tampon-bois-boussole.jpg";
 
 class ThreeTest extends React.Component {
   constructor(props) {
@@ -49,7 +50,7 @@ class ThreeTest extends React.Component {
     });
 
     const scene = (this.scene = new THREE.Scene());
-    scene.background = new THREE.Color(0xf0f0f0);
+    scene.background = new THREE.Color(0x000000);
 
     // RENDERER creation and configuration
     const renderer = (this.renderer = new THREE.WebGLRenderer({
@@ -86,48 +87,95 @@ class ThreeTest extends React.Component {
     });
 
     const markerMaterial = new THREE.MeshBasicMaterial({
-      color: 0xffff00,
+      color: 0xff0000,
       wireframe: false
     });
 
+    const texture = new THREE.TextureLoader().load(kdoimg);
+
+    // texture from canvas:
+
+    // CanvasTexture https://threejs.org/docs/#api/en/textures/CanvasTexture
+
+    // http://collaboradev.com/2016/03/17/drawing-on-textures-in-threejs/
+    // https://developer.mozilla.org/fr/docs/Web/API/CanvasRenderingContext2D/drawImage
+    // void ctx.drawImage(image, dx, dy, dLargeur, dHauteur);
+
+    //create in memory canvas
+    const sImg = 768;
+    const img = new THREE.ImageLoader().load(kdoimg);
+
+    let canvas2 = document.createElement("canvas");
+    let context2 = canvas2.getContext("2d");
+    canvas2.width = sImg / 2;
+    canvas2.height = sImg / 2;
+    context2.drawImage(img, 0, 0);
+    const canvasTexture2 = new THREE.CanvasTexture(canvas2);
+
+    let canvas3 = document.createElement("canvas");
+    let context3 = canvas3.getContext("2d");
+    canvas3.width = sImg / 2;
+    canvas3.height = sImg / 2;
+    context3.drawImage(img, -sImg / 2, 0);
+    const canvasTexture3 = new THREE.CanvasTexture(canvas3);
+
+    let canvas4 = document.createElement("canvas");
+    let context4 = canvas4.getContext("2d");
+    canvas4.width = sImg / 2;
+    canvas4.height = sImg / 2;
+    context4.drawImage(img, 0, -sImg / 2);
+    const canvasTexture4 = new THREE.CanvasTexture(canvas4);
+
+    let canvas5 = document.createElement("canvas");
+    let context5 = canvas5.getContext("2d");
+    canvas5.width = sImg / 2;
+    canvas5.height = sImg / 2;
+    context5.drawImage(img, -sImg / 2, -sImg / 2);
+    const canvasTexture5 = new THREE.CanvasTexture(canvas5);
+
+    var textureMaterial2 = new THREE.MeshBasicMaterial({
+      map: canvasTexture2
+    });
+
+    var textureMaterial3 = new THREE.MeshBasicMaterial({
+      map: canvasTexture3
+    });
+
+    var textureMaterial4 = new THREE.MeshBasicMaterial({
+      map: canvasTexture4
+    });
+
+    var textureMaterial5 = new THREE.MeshBasicMaterial({
+      map: canvasTexture5
+    });
+
     // MESH - create the model cube that will be cloned to create its others siblings
-    const cube = new THREE.Mesh(geometry, material); //cubes.clone();
-    cube.position.set(0, 0, 0);
+    const cube = new THREE.Mesh(geometry, textureMaterial2); //cubes.clone();
+    cube.position.set(0, 0, -1);
     scene.add(cube);
 
-    const cube2 = cube.clone();
-    cube2.position.set(1, 0, 0);
+    const cube2 = new THREE.Mesh(geometry, textureMaterial3);
+    cube2.position.set(1, 0, -1);
     scene.add(cube2);
 
-    const cube3 = cube.clone();
-    cube3.position.set(0, -1, 0);
+    const cube3 = new THREE.Mesh(geometry, textureMaterial4);
+    cube3.position.set(0, -1, -1);
     scene.add(cube3);
 
-    const cube4 = cube.clone();
-    cube4.position.set(1, -1, 0);
+    const cube4 = new THREE.Mesh(geometry, textureMaterial5);
+    cube4.position.set(1, -1, -1);
     scene.add(cube4);
 
     const circle = new THREE.Mesh(markerGeom, markerMaterial);
 
-    for (let x of [-0.5, 0.5, 1.5]) {
-      for (let y of [-1.5, -0.5, 0.5]) {
+    for (let x of [0, 0.5, 1]) {
+      for (let y of [-1, -0.5, 0]) {
         const c = circle.clone();
         c.position.set(x, y, 0);
         scene.add(c);
       }
     }
-    /*
-    circle.position.set(0.5, 0.5, 0);
-    scene.add(circle);
 
-    const c2 = circle.clone();
-    c2.position.set(-0.5, 0.5, 0);
-    scene.add(c2);
-
-    const c3 = circle.clone();
-    c3.position.set(-0.5, -0.5, 0);
-    scene.add(c3);
-*/
     // LIGHT - use two light at opposed position and at cube corner.
     const light_p = new THREE.PointLight(0xffffff);
     light_p.position.set(10, 10, 10);
@@ -218,8 +266,6 @@ class ThreeTest extends React.Component {
   }
 
   onDoubleTap() {
-    console.log("double");
-    //this.camera.rotateZ(Math.PI / 2);
     this.animObj.rotate = Math.PI / 2;
     this.rotationOrientation = (this.rotationOrientation + 1) % 4;
   }
