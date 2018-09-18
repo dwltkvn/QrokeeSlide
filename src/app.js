@@ -56,6 +56,9 @@ class App extends React.Component {
                 cbStoreImgSize={(w, h) => {
                   this.setState({ imgW: w, imgH: h });
                 }}
+                cbStoreNbSlide={(nbSlideW, nbSlideH) => {
+                  this.setState({ slideW: nbSlideW, slideH: nbSlideH });
+                }}
               />
             )}
           />
@@ -66,8 +69,8 @@ class App extends React.Component {
                 propImgData={this.state.imgData}
                 propImgWidth={this.state.imgW}
                 propImgHeight={this.state.imgH}
-                propNbSlideW={2}
-                propNbSlideH={2}
+                propNbSlideW={this.state.slideW}
+                propNbSlideH={this.state.slideH}
               />
             )}
           />

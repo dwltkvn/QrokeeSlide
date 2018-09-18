@@ -129,76 +129,23 @@ class ThreeTest extends React.Component {
 
     const nbW = this.props.propNbSlideW;
     const nbH = this.props.propNbSlideH;
-    //const img = new THREE.ImageLoader().load(kdoimg);
 
-    let canvas2 = document.createElement("canvas");
-    let context2 = canvas2.getContext("2d");
-    canvas2.width = sImgW / nbW;
-    canvas2.height = sImgH / nbH;
-    context2.drawImage(myImg, 0, 0);
-    const canvasTexture2 = new THREE.CanvasTexture(canvas2);
+    for (let i = 0; i < nbW; i++) {
+      for (let j = 0; j < nbH; j++) {
+        let canvas = document.createElement("canvas");
+        let context = canvas.getContext("2d");
+        canvas.width = sImgW / nbW;
+        canvas.height = sImgH / nbH;
+        context.drawImage(myImg, i * (-sImgW / nbW), j * (-sImgH / nbH));
+        const canvasTexture = new THREE.CanvasTexture(canvas);
 
-    let canvas3 = document.createElement("canvas");
-    let context3 = canvas3.getContext("2d");
-    canvas3.width = sImgW / nbW;
-    canvas3.height = sImgH / nbH;
-    context3.drawImage(myImg, -sImgW / nbW, 0);
-    const canvasTexture3 = new THREE.CanvasTexture(canvas3);
+        const textureMaterial = new THREE.MeshBasicMaterial({
+          map: canvasTexture
+        });
 
-    let canvas4 = document.createElement("canvas");
-    let context4 = canvas4.getContext("2d");
-    canvas4.width = sImgW / nbW;
-    canvas4.height = sImgH / nbH;
-    context4.drawImage(myImg, 0, -sImgH / nbH);
-    const canvasTexture4 = new THREE.CanvasTexture(canvas4);
-
-    let canvas5 = document.createElement("canvas");
-    let context5 = canvas5.getContext("2d");
-    canvas5.width = sImgW / nbW;
-    canvas5.height = sImgH / nbH;
-    context5.drawImage(myImg, -sImgW / nbW, -sImgH / nbH);
-    const canvasTexture5 = new THREE.CanvasTexture(canvas5);
-
-    var textureMaterial2 = new THREE.MeshBasicMaterial({
-      map: canvasTexture2
-    });
-
-    var textureMaterial3 = new THREE.MeshBasicMaterial({
-      map: canvasTexture3
-    });
-
-    var textureMaterial4 = new THREE.MeshBasicMaterial({
-      map: canvasTexture4
-    });
-
-    var textureMaterial5 = new THREE.MeshBasicMaterial({
-      map: canvasTexture5
-    });
-
-    // MESH - create the model cube that will be cloned to create its others siblings
-    const cube = new THREE.Mesh(geometry, textureMaterial2); //cubes.clone();
-    cube.position.set(0, 0, -1);
-    scene.add(cube);
-
-    const cube2 = new THREE.Mesh(geometry, textureMaterial3);
-    cube2.position.set(1, 0, -1);
-    scene.add(cube2);
-
-    const cube3 = new THREE.Mesh(geometry, textureMaterial4);
-    cube3.position.set(0, -1, -1);
-    scene.add(cube3);
-
-    const cube4 = new THREE.Mesh(geometry, textureMaterial5);
-    cube4.position.set(1, -1, -1);
-    scene.add(cube4);
-
-    const circle = new THREE.Mesh(markerGeom, markerMaterial);
-
-    for (let x of [0, 0.5, 1]) {
-      for (let y of [-1, -0.5, 0]) {
-        const c = circle.clone();
-        c.position.set(x, y, 0);
-        scene.add(c);
+        const cube = new THREE.Mesh(geometry, textureMaterial); //cubes.clone();
+        cube.position.set(i, -j, -1);
+        scene.add(cube);
       }
     }
 

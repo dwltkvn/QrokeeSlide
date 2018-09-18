@@ -49,7 +49,14 @@ class SelectPage extends React.Component {
     const img = new Image();
     img.onload = () => {
       ctx.drawImage(img, 0, 0);
-      this.props.cbStoreImgSize(img.width, img.height);
+
+      const nbSlideH = 2; // hardcoded, for now we just want 2 rows
+      const cubeside = img.height / nbSlideH;
+      const w = cubeside * Math.ceil(img.width / cubeside);
+      const nbSlideW = w / cubeside;
+
+      this.props.cbStoreImgSize(w, img.height);
+      this.props.cbStoreNbSlide(nbSlideW, nbSlideH);
       //console.log(img.width);
       //console.log(img.height);
     };
