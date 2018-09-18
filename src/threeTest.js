@@ -2,12 +2,14 @@ import React from "react";
 import * as THREE from "three";
 
 import Hammer from "hammerjs";
-import kdoimg from "./tampon-bois-boussole.jpg";
+import { Link } from "react-router-dom";
 
 class ThreeTest extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      stateError: false
+    };
 
     this.animObj = {
       moveX: false,
@@ -55,7 +57,10 @@ class ThreeTest extends React.Component {
       this.props.propImgData,
       i => this.buildThree(i),
       undefined,
-      () => console.log("Error on image load")
+      () => {
+        console.log("Error on image load");
+        this.setState({ stateError: true });
+      }
     );
 
     //console.log(this.props.propImgWidth);
@@ -113,6 +118,7 @@ class ThreeTest extends React.Component {
       wireframe: false
     });
 
+    const circle = new THREE.Mesh(markerGeom, markerMaterial);
     //const texture = new THREE.TextureLoader().load(kdoimg);
 
     // texture from canvas:
@@ -146,6 +152,10 @@ class ThreeTest extends React.Component {
         const cube = new THREE.Mesh(geometry, textureMaterial); //cubes.clone();
         cube.position.set(i, -j, -1);
         scene.add(cube);
+
+        const c = circle.clone();
+        c.position.set(i, -j, 0);
+        scene.add(c);
       }
     }
 
@@ -213,7 +223,7 @@ class ThreeTest extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.onResize);
-    this.renderer.dispose();
+    if (this.renderer) this.renderer.dispose();
   }
 
   onResize(e) {
@@ -291,7 +301,11 @@ class ThreeTest extends React.Component {
   }
 
   render() {
-    return <canvas ref={el => (this.canvas = el)} />;
+    return this.state.stateError ? (
+      <Link to="/">Load an image first !</Link>
+    ) : (
+      <canvas ref={el => (this.canvas = el)} />
+    );
   }
 }
 
