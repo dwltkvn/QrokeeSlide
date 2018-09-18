@@ -58,6 +58,9 @@ class ThreeTest extends React.Component {
       () => console.log("Error on image load")
     );
 
+    //console.log(this.props.propImgWidth);
+    //console.log(this.props.propImgHeight);
+
     // EVENT LISTENER - connect event to their respective slots.
     window.addEventListener("resize", this.onResize);
     this.hammertime.on("doubletap", () => this.onDoubleTap());
@@ -121,35 +124,39 @@ class ThreeTest extends React.Component {
     // void ctx.drawImage(image, dx, dy, dLargeur, dHauteur);
 
     //create in memory canvas
-    const sImg = 768;
+    const sImgW = this.props.propImgWidth;
+    const sImgH = this.props.propImgHeight;
+
+    const nbW = this.props.propNbSlideW;
+    const nbH = this.props.propNbSlideH;
     //const img = new THREE.ImageLoader().load(kdoimg);
 
     let canvas2 = document.createElement("canvas");
     let context2 = canvas2.getContext("2d");
-    canvas2.width = sImg / 2;
-    canvas2.height = sImg / 2;
+    canvas2.width = sImgW / nbW;
+    canvas2.height = sImgH / nbH;
     context2.drawImage(myImg, 0, 0);
     const canvasTexture2 = new THREE.CanvasTexture(canvas2);
 
     let canvas3 = document.createElement("canvas");
     let context3 = canvas3.getContext("2d");
-    canvas3.width = sImg / 2;
-    canvas3.height = sImg / 2;
-    context3.drawImage(myImg, -sImg / 2, 0);
+    canvas3.width = sImgW / nbW;
+    canvas3.height = sImgH / nbH;
+    context3.drawImage(myImg, -sImgW / nbW, 0);
     const canvasTexture3 = new THREE.CanvasTexture(canvas3);
 
     let canvas4 = document.createElement("canvas");
     let context4 = canvas4.getContext("2d");
-    canvas4.width = sImg / 2;
-    canvas4.height = sImg / 2;
-    context4.drawImage(myImg, 0, -sImg / 2);
+    canvas4.width = sImgW / nbW;
+    canvas4.height = sImgH / nbH;
+    context4.drawImage(myImg, 0, -sImgH / nbH);
     const canvasTexture4 = new THREE.CanvasTexture(canvas4);
 
     let canvas5 = document.createElement("canvas");
     let context5 = canvas5.getContext("2d");
-    canvas5.width = sImg / 2;
-    canvas5.height = sImg / 2;
-    context5.drawImage(myImg, -sImg / 2, -sImg / 2);
+    canvas5.width = sImgW / nbW;
+    canvas5.height = sImgH / nbH;
+    context5.drawImage(myImg, -sImgW / nbW, -sImgH / nbH);
     const canvasTexture5 = new THREE.CanvasTexture(canvas5);
 
     var textureMaterial2 = new THREE.MeshBasicMaterial({

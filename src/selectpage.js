@@ -47,7 +47,12 @@ class SelectPage extends React.Component {
     const ctx = c.getContext("2d");
 
     const img = new Image();
-    img.onload = () => ctx.drawImage(img, 0, 0);
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0);
+      this.props.cbStoreImgSize(img.width, img.height);
+      //console.log(img.width);
+      //console.log(img.height);
+    };
     img.src = this.imgData;
 
     this.imageRef.src = this.imgData;

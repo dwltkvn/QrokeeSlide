@@ -52,14 +52,24 @@ class App extends React.Component {
               <SelectPage
                 cbStoreImgData={data => {
                   this.setState({ imgData: data });
-                  console.log(data);
+                }}
+                cbStoreImgSize={(w, h) => {
+                  this.setState({ imgW: w, imgH: h });
                 }}
               />
             )}
           />
           <Route
             path="/qrokee"
-            render={() => <ThreeRenderer propImgData={this.state.imgData} />}
+            render={() => (
+              <ThreeRenderer
+                propImgData={this.state.imgData}
+                propImgWidth={this.state.imgW}
+                propImgHeight={this.state.imgH}
+                propNbSlideW={2}
+                propNbSlideH={2}
+              />
+            )}
           />
         </div>
       </BrowserRouter>
