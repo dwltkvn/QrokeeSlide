@@ -1,9 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { Route } from "react-router-dom";
+
+import { withStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
 
 const styles = theme => ({
-  className0: {}
+  className0: {
+    border: "1px solid red"
+  }
 });
 
 /*
@@ -17,6 +24,23 @@ const localStyles = {
 };
 */
 
+const NavButton = props => (
+  <Route
+    render={({ history }) => (
+      <Button
+        variant="contained"
+        color="secondary"
+        {...props}
+        onClick={() => {
+          history.push("/qrokee");
+        }}
+      >
+        Continue
+      </Button>
+    )}
+  />
+);
+
 class SelectPage extends React.Component {
   constructor(props) {
     super(props);
@@ -25,7 +49,9 @@ class SelectPage extends React.Component {
     this.onFileLoaded = this.onFileLoaded.bind(this);
     this.displaySelectedImage = this.displaySelectedImage.bind(this);
 
-    this.state = {};
+    this.state = {
+      stateImageLoaded: false
+    };
   }
 
   componentDidMount() {
@@ -43,13 +69,8 @@ class SelectPage extends React.Component {
   */
 
   displaySelectedImage() {
-    const c = this.canvasRef;
-    const ctx = c.getContext("2d");
-
     const img = new Image();
     img.onload = () => {
-      ctx.drawImage(img, 0, 0);
-
       const nbSlideH = 2; // hardcoded, for now we just want 2 rows
       const cubeside = img.height / nbSlideH;
       const w = cubeside * Math.ceil(img.width / cubeside);
@@ -57,8 +78,13 @@ class SelectPage extends React.Component {
 
       this.props.cbStoreImgSize(w, img.height);
       this.props.cbStoreNbSlide(nbSlideW, nbSlideH);
+
+      this.imageRef.width = w / 10;
+      this.imageRef.height = img.height / 10;
       //console.log(img.width);
       //console.log(img.height);
+
+      this.setState({ stateImageLoaded: true });
     };
     img.src = this.imgData;
 
@@ -84,40 +110,50 @@ class SelectPage extends React.Component {
   }
 
   render() {
-    //const { someState } = this.state;
+    const { classes } = this.props;
 
     return (
       <div>
-        <input
-          id="uploadInput"
-          type="file"
-          name="myFiles"
-          onChange={() => this.onFilesSelected()}
-          multiple
-          ref={elem => (this.inputRef = elem)}
-        />
-        <canvas
-          id="myCanvas"
-          width="200"
-          height="100"
-          style={{ border: "1px solid #000000" }}
-          ref={elem => (this.canvasRef = elem)}
-        />
-        <img
-          src=""
-          width="200"
-          height="100"
-          alt="Aperçu de l’image..."
-          ref={elem => (this.imageRef = elem)}
-        />
-        <Link to="/qrokee">Continue !</Link>
+        <div className={classes.className0}>
+          <input
+            id="uploadInput"
+            type="file"
+            name="myFiles"
+            onChange={() => this.onFilesSelected()}
+            multiple
+            ref={elem => (this.inputRef = elem)}
+            style={{ display: "none" }}
+          />
+          <Typography variant="display4" gutterBottom>
+            Qrokee Slider
+          </Typography>
+        </div>
+        <div className={{ ...classes.className0 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => this.inputRef.click()}
+          >
+            Select Image
+          </Button>
+          <NavButton disabled={!this.state.stateImageLoaded} />
+        </div>
+        <div className={classes.className0}>
+          <img
+            width="0"
+            height="0"
+            src=""
+            alt=""
+            ref={elem => (this.imageRef = elem)}
+          />
+        </div>
       </div>
     );
   }
 }
 
 SelectPage.propTypes = {
-  classes: PropTypes.object.isRequired
+  //classes: PropTypes.object.isRequired
 };
 
 SelectPage.defaultProps = {
@@ -130,4 +166,4 @@ TemplateComponent.staticStyles = {
 };
 */
 
-export default SelectPage;
+export default withStyles(styles)(SelectPage);

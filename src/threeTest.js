@@ -21,9 +21,11 @@ class ThreeTest extends React.Component {
 
     this.displaySize = 0.5; // default : 0.5
     this.rotationOrientation = 0;
+    this.ambiantIntensity = 1.0;
 
     this.onResize = this.onResize.bind(this);
     this.onDoubleTap = this.onDoubleTap.bind(this);
+    this.onSingleTap = this.onSingleTap.bind(this);
 
     this.onSwipeLeft = this.onSwipeLeft.bind(this);
     this.onSwipeRight = this.onSwipeRight.bind(this);
@@ -38,18 +40,15 @@ class ThreeTest extends React.Component {
 
   componentDidMount() {
     this.hammertime = new Hammer.Manager(this.canvas, {
-      recognizers: [
-        // RecognizerClass, [options], [recognizeWith, ...], [requireFailure, ...]
-        [Hammer.Tap, { event: "doubletap", taps: 2 }]
-      ]
+      recognizers: []
     });
 
-    this.hammerswipe = new Hammer.Manager(this.canvas, {
-      recognizers: [
-        // RecognizerClass, [options], [recognizeWith, ...], [requireFailure, ...]
-        [Hammer.Swipe, {}]
-      ]
-    });
+    var singleTap = new Hammer.Tap({ event: "singletap", taps: 1 });
+    var doubleTap = new Hammer.Tap({ event: "doubletap", taps: 2 });
+    const swipe = new Hammer.Swipe({});
+    this.hammertime.add([swipe, doubleTap, singleTap]);
+    doubleTap.recognizeWith(singleTap);
+    singleTap.requireFailure(doubleTap);
 
     // load ressoures, then build three js scene
     //const img = new THREE.ImageLoader().load(kdoimg, i => this.buildThree(i));
@@ -68,11 +67,12 @@ class ThreeTest extends React.Component {
 
     // EVENT LISTENER - connect event to their respective slots.
     window.addEventListener("resize", this.onResize);
+    this.hammertime.on("singletap", () => this.onSingleTap());
     this.hammertime.on("doubletap", () => this.onDoubleTap());
-    this.hammerswipe.on("swipeleft", () => this.onSwipeLeft());
-    this.hammerswipe.on("swiperight", () => this.onSwipeRight());
-    this.hammerswipe.on("swipeup", () => this.onSwipeUp());
-    this.hammerswipe.on("swipedown", () => this.onSwipeDown());
+    this.hammertime.on("swipeleft", () => this.onSwipeLeft());
+    this.hammertime.on("swiperight", () => this.onSwipeRight());
+    this.hammertime.on("swipeup", () => this.onSwipeUp());
+    this.hammertime.on("swipedown", () => this.onSwipeDown());
   }
 
   buildThree(myImg) {
@@ -108,11 +108,7 @@ class ThreeTest extends React.Component {
     const geometry = new THREE.PlaneGeometry(0.99, 0.99, 0.99);
     const markerGeom = new THREE.CircleGeometry(0.1, 3);
 
-    // MATERIAL - create the default material (red cube) and selected material (white cube) + create a material for each color of the palette passed via props.
-    const material = new THREE.MeshLambertMaterial({
-      color: 0xff0000
-    });
-
+    // MATERIAL - create the default material
     const markerMaterial = new THREE.MeshBasicMaterial({
       color: 0xff0000,
       wireframe: false
@@ -145,7 +141,8 @@ class ThreeTest extends React.Component {
         context.drawImage(myImg, i * (-sImgW / nbW), j * (-sImgH / nbH));
         const canvasTexture = new THREE.CanvasTexture(canvas);
 
-        const textureMaterial = new THREE.MeshBasicMaterial({
+        //const textureMaterial = new THREE.MeshBasicMaterial({
+        const textureMaterial = new THREE.MeshPhongMaterial({
           map: canvasTexture
         });
 
@@ -159,16 +156,9 @@ class ThreeTest extends React.Component {
       }
     }
 
-    // LIGHT - use two light at opposed position and at cube corner.
-    const light_p = new THREE.PointLight(0xffffff);
-    light_p.position.set(10, 10, 10);
-    scene.add(light_p);
+    // LIGHT -
 
-    const light_p2 = new THREE.PointLight(0xffffff);
-    light_p2.position.set(-10, -10, -10);
-    scene.add(light_p2);
-
-    const light_a = new THREE.AmbientLight(0x333333);
+    const light_a = (this.light = new THREE.AmbientLight(0xffffff));
     scene.add(light_a);
 
     // ANIMATION FRAME - initiate the request animation frame and call it a first time to start the loop.
@@ -240,6 +230,11 @@ class ThreeTest extends React.Component {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
+  onSingleTap() {
+    this.light.intensity -= 0.5;
+    if (this.light.intensity === 0) this.light.intensity = 0.1;
+    if (this.light.intensity < 0) this.light.intensity = 1.0;
+  }
   onDoubleTap() {
     this.animObj.rotate = Math.PI / 2;
     this.rotationOrientation = (this.rotationOrientation + 1) % 4;
