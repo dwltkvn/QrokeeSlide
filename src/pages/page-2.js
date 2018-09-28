@@ -137,7 +137,7 @@ class ThreeTest extends React.Component {
     const sImgH = this.props.location.state.size.h;
 
     const nbW = this.props.location.state.slide.w;
-    const nbH = this.props.location.state.slide.w;
+    const nbH = this.props.location.state.slide.h;
 
     for (let i = 0; i < nbW; i++) {
       for (let j = 0; j < nbH; j++) {
