@@ -33,8 +33,6 @@ class IndexPage extends React.Component {
       const w = cubeside * Math.ceil(img.width / cubeside);
       const nbSlideW = w / cubeside;
 
-      //this.props.cbStoreImgSize(w, img.height);
-      //this.props.cbStoreNbSlide(nbSlideW, nbSlideH);
       this.storeImgSize = { w: w, h: img.height };
       this.storeNbSlide = { w: nbSlideW, h: nbSlideH };
 
@@ -48,7 +46,6 @@ class IndexPage extends React.Component {
     img.src = this.imgData;
 
     this.imageRef.src = this.imgData;
-    //this.props.cbStoreImgData(this.imgData);
     this.storeImgData = this.imgData;
   }
 
@@ -81,9 +78,6 @@ class IndexPage extends React.Component {
           ref={elem => (this.inputRef = elem)}
           style={{ display: "none" }}
         />
-        <h1>Hi people</h1>
-        <p>Welcome to your new Gatsby site.</p>
-        <p>Now go build something great.</p>
         <Button
           variant="contained"
           color="primary"
@@ -95,6 +89,7 @@ class IndexPage extends React.Component {
           variant="contained"
           color="primary"
           role="link"
+          disabled={!this.state.stateImageLoaded}
           onClick={() =>
             navigate("/page-2/", {
               state: {
