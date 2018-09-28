@@ -1,8 +1,10 @@
 import React from "react";
 import * as THREE from "three";
-
 import Hammer from "hammerjs";
-import { Link } from "react-router-dom";
+import { navigate } from "gatsby";
+
+import Layout from "../components/layout";
+import Button from "@material-ui/core/Button";
 
 class ThreeTest extends React.Component {
   constructor(props) {
@@ -53,7 +55,7 @@ class ThreeTest extends React.Component {
     // load ressoures, then build three js scene
     //const img = new THREE.ImageLoader().load(kdoimg, i => this.buildThree(i));
     const img = new THREE.ImageLoader().load(
-      this.props.propImgData,
+      this.props.location.state.data,
       i => this.buildThree(i),
       undefined,
       () => {
@@ -126,11 +128,11 @@ class ThreeTest extends React.Component {
     // void ctx.drawImage(image, dx, dy, dLargeur, dHauteur);
 
     //create in memory canvas
-    const sImgW = this.props.propImgWidth;
-    const sImgH = this.props.propImgHeight;
+    const sImgW = this.props.location.state.size.w;
+    const sImgH = this.props.location.state.size.h;
 
-    const nbW = this.props.propNbSlideW;
-    const nbH = this.props.propNbSlideH;
+    const nbW = this.props.location.state.slide.w;
+    const nbH = this.props.location.state.slide.w;
 
     for (let i = 0; i < nbW; i++) {
       for (let j = 0; j < nbH; j++) {
@@ -297,7 +299,16 @@ class ThreeTest extends React.Component {
 
   render() {
     return this.state.stateError ? (
-      <Link to="/">Load an image first !</Link>
+      <Layout>
+        <Button
+          variant="contained"
+          color="primary"
+          role="link"
+          onClick={() => navigate("")}
+        >
+          Return
+        </Button>
+      </Layout>
     ) : (
       <canvas ref={el => (this.canvas = el)} />
     );
