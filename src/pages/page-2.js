@@ -1,6 +1,6 @@
 import React from "react";
 import * as THREE from "three";
-import Hammer from "hammerjs";
+//import Hammer from "hammerjs";
 import { navigate } from "gatsby";
 
 import Layout from "../components/layout";
@@ -41,16 +41,27 @@ class ThreeTest extends React.Component {
   }
 
   componentDidMount() {
-    this.hammertime = new Hammer.Manager(this.canvas, {
-      recognizers: []
-    });
+    const isBrowser = typeof window !== "undefined";
+    const Hammer = isBrowser ? require("hammerjs") : undefined;
+    if (Hammer) {
+      this.hammertime = new Hammer.Manager(this.canvas, {
+        recognizers: []
+      });
 
-    var singleTap = new Hammer.Tap({ event: "singletap", taps: 1 });
-    var doubleTap = new Hammer.Tap({ event: "doubletap", taps: 2 });
-    const swipe = new Hammer.Swipe({});
-    this.hammertime.add([swipe, doubleTap, singleTap]);
-    doubleTap.recognizeWith(singleTap);
-    singleTap.requireFailure(doubleTap);
+      var singleTap = new Hammer.Tap({ event: "singletap", taps: 1 });
+      var doubleTap = new Hammer.Tap({ event: "doubletap", taps: 2 });
+      const swipe = new Hammer.Swipe({});
+      this.hammertime.add([swipe, doubleTap, singleTap]);
+      doubleTap.recognizeWith(singleTap);
+      singleTap.requireFailure(doubleTap);
+
+      this.hammertime.on("singletap", () => this.onSingleTap());
+      this.hammertime.on("doubletap", () => this.onDoubleTap());
+      this.hammertime.on("swipeleft", () => this.onSwipeLeft());
+      this.hammertime.on("swiperight", () => this.onSwipeRight());
+      this.hammertime.on("swipeup", () => this.onSwipeUp());
+      this.hammertime.on("swipedown", () => this.onSwipeDown());
+    }
 
     // load ressoures, then build three js scene
     //const img = new THREE.ImageLoader().load(kdoimg, i => this.buildThree(i));
@@ -69,12 +80,6 @@ class ThreeTest extends React.Component {
 
     // EVENT LISTENER - connect event to their respective slots.
     window.addEventListener("resize", this.onResize);
-    this.hammertime.on("singletap", () => this.onSingleTap());
-    this.hammertime.on("doubletap", () => this.onDoubleTap());
-    this.hammertime.on("swipeleft", () => this.onSwipeLeft());
-    this.hammertime.on("swiperight", () => this.onSwipeRight());
-    this.hammertime.on("swipeup", () => this.onSwipeUp());
-    this.hammertime.on("swipedown", () => this.onSwipeDown());
   }
 
   buildThree(myImg) {
