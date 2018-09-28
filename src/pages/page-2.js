@@ -303,19 +303,21 @@ class ThreeTest extends React.Component {
   }
 
   render() {
-    return this.state.stateError ? (
+    return (
       <Layout>
-        <Button
-          variant="contained"
-          color="primary"
-          role="link"
-          onClick={() => navigate("")}
-        >
-          Return
-        </Button>
+        {this.state.stateError ? (
+          <Button
+            variant="contained"
+            color="primary"
+            role="link"
+            onClick={() => navigate("")}
+          >
+            Return
+          </Button>
+        ) : (
+          <canvas ref={el => (this.canvas = el)} />
+        )}
       </Layout>
-    ) : (
-      <canvas ref={el => (this.canvas = el)} />
     );
   }
 }
