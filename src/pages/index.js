@@ -12,6 +12,7 @@ class IndexPage extends React.Component {
     this.onFileLoaded = this.onFileLoaded.bind(this);
     this.displaySelectedImage = this.displaySelectedImage.bind(this);
     this.setNbSlideH = this.setNbSlideH.bind(this);
+    this.setNbSlideW = this.setNbSlideW.bind(this);
 
     this.state = {
       stateImageLoaded: false,
@@ -63,6 +64,23 @@ class IndexPage extends React.Component {
     });
   }
 
+  setNbSlideW() {
+    const nbSlideW = this.state.stateNbSlide.w; // hardcoded, for now we just want 2 rows
+    const { nbSlideH, h } = this.computeNbSlideH(
+      nbSlideW,
+      this.storeImgOrgSize.w,
+      this.storeImgOrgSize.h
+    );
+
+    this.storeImgSize = { w: this.storeImgOrgSize.w, h: h };
+    this.storeNbSlide = { w: nbSlideW, h: nbSlideH };
+
+    this.setState({
+      stateNbSlide: this.storeNbSlide,
+      stateImg: this.storeImgSize
+    });
+  }
+
   displaySelectedImage() {
     const img = new Image();
     img.onload = () => {
@@ -76,30 +94,6 @@ class IndexPage extends React.Component {
       });
 
       this.setNbSlideH();
-      /*
-      const nbSlideH = 2; // hardcoded, for now we just want 2 rows
-      const { nbSlideW, w } = this.computeNbSlideW(
-        nbSlideH,
-        img.width,
-        img.height
-      );
-
-      this.storeImgOrgSize = { w: img.width, h: img.height };
-      this.storeImgSize = { w: w, h: img.height };
-      //this.storeImgSize = { w: img.width, h: img.height };
-      this.storeNbSlide = { w: nbSlideW, h: nbSlideH };
-
-      this.imageRef.width = img.width / 10; //w / 10;
-      this.imageRef.height = img.height / 10;
-      //console.log(img.width);
-      //console.log(img.height);
-
-      this.setState({
-        stateImageLoaded: true,
-        stateNbSlide: this.storeNbSlide,
-        stateImg: this.storeImgSize
-      });
-      */
     };
     img.src = this.imgData;
 
@@ -165,6 +159,12 @@ class IndexPage extends React.Component {
             variant="contained"
             color="primary"
             disabled={!this.state.stateImageLoaded}
+            onClick={() => {
+              let stateNbSlide = this.state.stateNbSlide;
+              stateNbSlide.w -= 1;
+              this.setState({ stateNbSlide });
+              this.setNbSlideW();
+            }}
           >
             -
           </Button>
@@ -173,6 +173,12 @@ class IndexPage extends React.Component {
             variant="contained"
             color="primary"
             disabled={!this.state.stateImageLoaded}
+            onClick={() => {
+              let stateNbSlide = this.state.stateNbSlide;
+              stateNbSlide.w += 1;
+              this.setState({ stateNbSlide });
+              this.setNbSlideW();
+            }}
           >
             +
           </Button>
