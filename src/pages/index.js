@@ -11,9 +11,12 @@ class IndexPage extends React.Component {
     this.onFilesSelected = this.onFilesSelected.bind(this);
     this.onFileLoaded = this.onFileLoaded.bind(this);
     this.displaySelectedImage = this.displaySelectedImage.bind(this);
+    this.setNbSlideH = this.setNbSlideH.bind(this);
 
     this.state = {
-      stateImageLoaded: false
+      stateImageLoaded: false,
+      stateNbSlide: { w: 0, h: 2 },
+      stateImg: { w: 0, h: 0 }
     };
   }
 
@@ -25,23 +28,78 @@ class IndexPage extends React.Component {
     //window.removeEventListener("event", this.handleEvent);
   }
 
+  computeNbSlideW(pNbSlideH, pImgW, pImgH) {
+    const nbSlideH = pNbSlideH;
+    const cubeside = pImgH / nbSlideH;
+    const w = cubeside * Math.ceil(pImgW / cubeside);
+    const nbSlideW = w / cubeside;
+
+    return { nbSlideW, w };
+  }
+
+  computeNbSlideH(pNbSlideW, pImgW, pImgH) {
+    const nbSlideW = pNbSlideW;
+    const cubeside = pImgW / nbSlideW;
+    const h = cubeside * Math.ceil(pImgH / cubeside);
+    const nbSlideH = h / cubeside;
+
+    return { nbSlideH, h };
+  }
+
+  setNbSlideH() {
+    const nbSlideH = this.state.stateNbSlide.h; // hardcoded, for now we just want 2 rows
+    const { nbSlideW, w } = this.computeNbSlideW(
+      nbSlideH,
+      this.storeImgOrgSize.w,
+      this.storeImgOrgSize.h
+    );
+
+    this.storeImgSize = { w: w, h: this.storeImgOrgSize.h };
+    this.storeNbSlide = { w: nbSlideW, h: nbSlideH };
+
+    this.setState({
+      stateNbSlide: this.storeNbSlide,
+      stateImg: this.storeImgSize
+    });
+  }
+
   displaySelectedImage() {
     const img = new Image();
     img.onload = () => {
-      const nbSlideH = 2; // hardcoded, for now we just want 2 rows
-      const cubeside = img.height / nbSlideH;
-      const w = cubeside * Math.ceil(img.width / cubeside);
-      const nbSlideW = w / cubeside;
+      this.imageRef.width = img.width / 10;
+      this.imageRef.height = img.height / 10;
 
+      this.storeImgOrgSize = { w: img.width, h: img.height };
+
+      this.setState({
+        stateImageLoaded: true
+      });
+
+      this.setNbSlideH();
+      /*
+      const nbSlideH = 2; // hardcoded, for now we just want 2 rows
+      const { nbSlideW, w } = this.computeNbSlideW(
+        nbSlideH,
+        img.width,
+        img.height
+      );
+
+      this.storeImgOrgSize = { w: img.width, h: img.height };
       this.storeImgSize = { w: w, h: img.height };
+      //this.storeImgSize = { w: img.width, h: img.height };
       this.storeNbSlide = { w: nbSlideW, h: nbSlideH };
 
-      this.imageRef.width = w / 10;
+      this.imageRef.width = img.width / 10; //w / 10;
       this.imageRef.height = img.height / 10;
       //console.log(img.width);
       //console.log(img.height);
 
-      this.setState({ stateImageLoaded: true });
+      this.setState({
+        stateImageLoaded: true,
+        stateNbSlide: this.storeNbSlide,
+        stateImg: this.storeImgSize
+      });
+      */
     };
     img.src = this.imgData;
 
@@ -102,6 +160,55 @@ class IndexPage extends React.Component {
         >
           Continue
         </Button>
+        <div>
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={!this.state.stateImageLoaded}
+          >
+            -
+          </Button>
+          Width : {this.state.stateNbSlide.w}
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={!this.state.stateImageLoaded}
+          >
+            +
+          </Button>
+        </div>
+        <div>
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={!this.state.stateImageLoaded}
+            onClick={() => {
+              let stateNbSlide = this.state.stateNbSlide;
+              stateNbSlide.h -= 1;
+              this.setState({ stateNbSlide });
+              this.setNbSlideH();
+            }}
+          >
+            -
+          </Button>
+          Height : {this.state.stateNbSlide.h}
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={!this.state.stateImageLoaded}
+            onClick={() => {
+              let stateNbSlide = this.state.stateNbSlide;
+              stateNbSlide.h += 1;
+              this.setState({ stateNbSlide });
+              this.setNbSlideH();
+            }}
+          >
+            +
+          </Button>
+        </div>
+        <div>
+          Size: {this.state.stateImg.w} x {this.state.stateImg.h}
+        </div>
         <div>
           <img
             width="0"

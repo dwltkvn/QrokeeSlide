@@ -112,7 +112,7 @@ class ThreeTest extends React.Component {
 
     // GEOMETRY - Create our only geometry: a cube.
     //const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const geometry = new THREE.PlaneGeometry(0.99, 0.99, 0.99);
+    const geometry = new THREE.PlaneGeometry(0.999, 0.999, 0.999);
     const markerGeom = new THREE.CircleGeometry(0.1, 3);
 
     // MATERIAL - create the default material
