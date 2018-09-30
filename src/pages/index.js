@@ -17,7 +17,8 @@ class IndexPage extends React.Component {
     this.state = {
       stateImageLoaded: false,
       stateNbSlide: { w: 0, h: 2 },
-      stateImg: { w: 0, h: 0 }
+      stateImg: { w: 0, h: 0 },
+      stateIntensity: 0.5
     };
   }
 
@@ -147,7 +148,8 @@ class IndexPage extends React.Component {
               state: {
                 size: this.storeImgSize,
                 slide: this.storeNbSlide,
-                data: this.storeImgData
+                data: this.storeImgData,
+                intensity: this.state.stateIntensity
               }
             })
           }
@@ -207,6 +209,33 @@ class IndexPage extends React.Component {
               stateNbSlide.h += 1;
               this.setState({ stateNbSlide });
               this.setNbSlideH();
+            }}
+          >
+            +
+          </Button>
+        </div>
+        <div>
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={!this.state.stateImageLoaded}
+            onClick={() => {
+              this.setState(prev => ({
+                stateIntensity: prev.stateIntensity - 0.1
+              }));
+            }}
+          >
+            -
+          </Button>
+          Intensity on touch : {this.state.stateIntensity}
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={!this.state.stateImageLoaded}
+            onClick={() => {
+              this.setState(prev => ({
+                stateIntensity: prev.stateIntensity + 0.1
+              }));
             }}
           >
             +

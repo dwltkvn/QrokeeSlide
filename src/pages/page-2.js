@@ -29,6 +29,9 @@ class ThreeTest extends React.Component {
     this.onDoubleTap = this.onDoubleTap.bind(this);
     this.onSingleTap = this.onSingleTap.bind(this);
 
+    this.onPress = this.onPress.bind(this);
+    this.onPressUp = this.onPressUp.bind(this);
+
     this.onSwipeLeft = this.onSwipeLeft.bind(this);
     this.onSwipeRight = this.onSwipeRight.bind(this);
     this.onSwipeUp = this.onSwipeUp.bind(this);
@@ -50,12 +53,15 @@ class ThreeTest extends React.Component {
 
       var singleTap = new Hammer.Tap({ event: "singletap", taps: 1 });
       var doubleTap = new Hammer.Tap({ event: "doubletap", taps: 2 });
+      var press = new Hammer.Press();
       const swipe = new Hammer.Swipe({});
-      this.hammertime.add([swipe, doubleTap, singleTap]);
+      this.hammertime.add([swipe, press, doubleTap]);
       doubleTap.recognizeWith(singleTap);
       singleTap.requireFailure(doubleTap);
 
-      this.hammertime.on("singletap", () => this.onSingleTap());
+      //this.hammertime.on("singletap", () => this.onSingleTap());
+      this.hammertime.on("press", () => this.onPress());
+      this.hammertime.on("pressup", () => this.onPressUp());
       this.hammertime.on("doubletap", () => this.onDoubleTap());
       this.hammertime.on("swipeleft", () => this.onSwipeLeft());
       this.hammertime.on("swiperight", () => this.onSwipeRight());
@@ -164,7 +170,6 @@ class ThreeTest extends React.Component {
     }
 
     // LIGHT -
-
     const light_a = (this.light = new THREE.AmbientLight(0xffffff));
     scene.add(light_a);
 
@@ -237,6 +242,13 @@ class ThreeTest extends React.Component {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
+  onPress() {
+    this.light.intensity = this.props.location.state.intensity;
+  }
+
+  onPressUp() {
+    this.light.intensity = 1.0;
+  }
   onSingleTap() {
     this.light.intensity -= 0.5;
     if (this.light.intensity === 0) this.light.intensity = 0.1;
