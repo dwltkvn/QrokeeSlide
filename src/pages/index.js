@@ -106,8 +106,13 @@ class IndexPage extends React.Component {
     const Jimp = window.Jimp;
     Jimp.read(e.target.result)
       .then(image => {
-        image.invert();
-        image.getBase64(Jimp.MIME_JPEG, (err, data) => {
+        /*image.color([
+          { apply: "greyscale", params: [100] }
+          //{ apply: "shade", params: [50] }
+        ]);
+        image.normalize();*/
+        //image.resize(512, 512);
+        image.getBase64(Jimp.AUTO, (err, data) => {
           this.imgData = data;
           this.displaySelectedImage();
         });
