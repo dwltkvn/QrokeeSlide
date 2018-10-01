@@ -103,8 +103,18 @@ class IndexPage extends React.Component {
   }
 
   onFileLoaded(e) {
-    this.imgData = e.target.result;
-    this.displaySelectedImage();
+    const Jimp = window.Jimp;
+    Jimp.read(e.target.result)
+      .then(image => {
+        image.invert();
+        image.getBase64(Jimp.MIME_JPEG, (err, data) => {
+          this.imgData = data;
+          this.displaySelectedImage();
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 
   onFilesSelected(e) {
@@ -117,6 +127,7 @@ class IndexPage extends React.Component {
     var reader = new FileReader();
     reader.onload = this.onFileLoaded;
     reader.readAsDataURL(this.inputRef.files[0]);
+    //reader.readAsBinaryString(this.inputRef.files[0]);
   }
 
   render() {
