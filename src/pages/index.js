@@ -1,5 +1,6 @@
 import React from "react";
 import { navigate } from "gatsby";
+import { graphql } from "gatsby";
 
 import Layout from "../components/layout";
 import Button from "@material-ui/core/Button";
@@ -176,6 +177,11 @@ class IndexPage extends React.Component {
   render() {
     return (
       <Layout>
+        <h1>
+          {this.props.data.site.siteMetadata.title} v{
+            this.props.data.site.siteMetadata.version
+          }
+        </h1>
         <input
           id="uploadInput"
           type="file"
@@ -320,4 +326,14 @@ class IndexPage extends React.Component {
   }
 }
 
+export const query = graphql`
+  query {
+    site {
+      siteMetadata {
+        title
+version
+      }
+    }
+  }
+`;
 export default IndexPage;
