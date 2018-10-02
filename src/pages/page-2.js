@@ -5,12 +5,14 @@ import { navigate } from "gatsby";
 
 import Layout from "../components/layout";
 import Button from "@material-ui/core/Button";
+import Snackbar from "@material-ui/core/Snackbar";
 
 class ThreeTest extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      stateError: false
+      stateError: false,
+      openNotification: false
     };
 
     this.animObj = {
@@ -44,6 +46,23 @@ class ThreeTest extends React.Component {
   }
 
   componentDidMount() {
+    if (
+      this.props.location.state === null ||
+      !this.props.location.state.hasOwnProperty("data") ||
+      this.props.location.state.data === undefined
+    ) {
+      const state = JSON.parse(localStorage.getItem("myState"));
+      if (state) {
+        this.props.location.state = state;
+        this.setState({ openNotification: true });
+      } else {
+        this.setState({ stateError: true });
+        return;
+      }
+    }
+
+    localStorage.setItem("myState", JSON.stringify(this.props.location.state));
+
     const isBrowser = typeof window !== "undefined";
     const Hammer = isBrowser ? require("hammerjs") : undefined;
     if (Hammer) {
@@ -327,7 +346,18 @@ class ThreeTest extends React.Component {
             Return
           </Button>
         ) : (
-          <canvas ref={el => (this.canvas = el)} />
+          <div>
+            <Snackbar
+              anchorOrigin={{ vertical: "top", horizontal: "center" }}
+              open={this.state.openNotification}
+              onClose={() => this.setState({ openNotification: false })}
+              ContentProps={{
+                "aria-describedby": "message-id"
+              }}
+              message={<span id="message-id">Session restored</span>}
+            />
+            <canvas ref={el => (this.canvas = el)} />
+          </div>
         )}
       </Layout>
     );

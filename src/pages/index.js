@@ -4,6 +4,12 @@ import { navigate } from "gatsby";
 import Layout from "../components/layout";
 import Button from "@material-ui/core/Button";
 
+const PrimaryButton = ({ children, ...props }) => (
+  <Button variant="contained" color="primary" {...props}>
+    {children}
+  </Button>
+);
+
 class IndexPage extends React.Component {
   constructor(props) {
     super(props);
@@ -13,17 +19,22 @@ class IndexPage extends React.Component {
     this.displaySelectedImage = this.displaySelectedImage.bind(this);
     this.setNbSlideH = this.setNbSlideH.bind(this);
     this.setNbSlideW = this.setNbSlideW.bind(this);
+    this.restorePreviousSession = this.restorePreviousSession.bind(this);
 
     this.state = {
       stateImageLoaded: false,
       stateNbSlide: { w: 0, h: 2 },
       stateImg: { w: 0, h: 0 },
-      stateIntensity: 0.5
+      stateIntensity: 0.5,
+      statePreviousSessionAvailable: false
     };
   }
 
   componentDidMount() {
     //window.addEventListener("event", this.handleEvent);
+    const localStorageState = localStorage.getItem("myState");
+    if (localStorageState)
+      this.setState({ statePreviousSessionAvailable: true });
   }
 
   componentWillUnmount() {
@@ -135,6 +146,14 @@ class IndexPage extends React.Component {
     //reader.readAsBinaryString(this.inputRef.files[0]);
   }
 
+  restorePreviousSession() {
+    const localStorageState = JSON.parse(localStorage.getItem("myState"));
+    this.storeImgSize = localStorageState.size;
+    this.storeNbSlide = localStorageState.slide;
+    this.storeImgData = localStorageState.data;
+    this.setState({ stateIntensity: localStorageState.intensity });
+  }
+
   render() {
     return (
       <Layout>
@@ -147,16 +166,10 @@ class IndexPage extends React.Component {
           ref={elem => (this.inputRef = elem)}
           style={{ display: "none" }}
         />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => this.inputRef.click()}
-        >
+        <PrimaryButton onClick={() => this.inputRef.click()}>
           Select Image
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
+        </PrimaryButton>
+        <PrimaryButton
           role="link"
           disabled={!this.state.stateImageLoaded}
           onClick={() =>
@@ -171,70 +184,82 @@ class IndexPage extends React.Component {
           }
         >
           Continue
-        </Button>
+        </PrimaryButton>
+        <PrimaryButton
+          disabled={!this.state.statePreviousSessionAvailable}
+          onClick={() => {
+            this.restorePreviousSession();
+            navigate("/page-2/", {
+              state: {
+                size: this.storeImgSize,
+                slide: this.storeNbSlide,
+                data: this.storeImgData,
+                intensity: this.state.stateIntensity
+              }
+            });
+          }}
+        >
+          Restore
+        </PrimaryButton>
         <div>
-          <Button
-            variant="contained"
-            color="primary"
-            disabled={!this.state.stateImageLoaded}
+          <PrimaryButton
+            disabled={
+              !this.state.stateImageLoaded || this.state.stateNbSlide.w < 2
+            }
             onClick={() => {
               let stateNbSlide = this.state.stateNbSlide;
-              stateNbSlide.w -= 1;
+              stateNbSlide.w -= 1.0;
               this.setState({ stateNbSlide });
               this.setNbSlideW();
             }}
           >
             -
-          </Button>
-          Width : {this.state.stateNbSlide.w}
-          <Button
-            variant="contained"
-            color="primary"
+          </PrimaryButton>
+          Width : {Math.round(this.state.stateNbSlide.w)}
+          <PrimaryButton
             disabled={!this.state.stateImageLoaded}
             onClick={() => {
               let stateNbSlide = this.state.stateNbSlide;
-              stateNbSlide.w += 1;
+              stateNbSlide.w += 1.0;
               this.setState({ stateNbSlide });
               this.setNbSlideW();
             }}
           >
             +
-          </Button>
+          </PrimaryButton>
         </div>
         <div>
-          <Button
-            variant="contained"
-            color="primary"
-            disabled={!this.state.stateImageLoaded}
+          <PrimaryButton
+            disabled={
+              !this.state.stateImageLoaded || this.state.stateNbSlide.h < 2
+            }
             onClick={() => {
               let stateNbSlide = this.state.stateNbSlide;
-              stateNbSlide.h -= 1;
+              stateNbSlide.h -= 1.0;
               this.setState({ stateNbSlide });
               this.setNbSlideH();
             }}
           >
             -
-          </Button>
-          Height : {this.state.stateNbSlide.h}
-          <Button
-            variant="contained"
-            color="primary"
+          </PrimaryButton>
+          Height : {Math.round(this.state.stateNbSlide.h)}
+          <PrimaryButton
             disabled={!this.state.stateImageLoaded}
             onClick={() => {
               let stateNbSlide = this.state.stateNbSlide;
-              stateNbSlide.h += 1;
+              stateNbSlide.h += 1.0;
               this.setState({ stateNbSlide });
               this.setNbSlideH();
             }}
           >
             +
-          </Button>
+          </PrimaryButton>
         </div>
         <div>
-          <Button
-            variant="contained"
-            color="primary"
-            disabled={!this.state.stateImageLoaded}
+          <PrimaryButton
+            disabled={
+              !this.state.stateImageLoaded || this.state.stateIntensity < 0.1
+            }
             onClick={() => {
               this.setState(prev => ({
                 stateIntensity: prev.stateIntensity - 0.1
@@ -242,12 +267,13 @@ class IndexPage extends React.Component {
             }}
           >
             -
-          </Button>
-          Intensity on touch : {this.state.stateIntensity}
-          <Button
-            variant="contained"
-            color="primary"
-            disabled={!this.state.stateImageLoaded}
+          </PrimaryButton>
+          Intensity on touch :{" "}
+          {Math.round(this.state.stateIntensity * 10.0) / 10.0}
+          <PrimaryButton
+            disabled={
+              !this.state.stateImageLoaded || this.state.stateIntensity > 0.9
+            }
             onClick={() => {
               this.setState(prev => ({
                 stateIntensity: prev.stateIntensity + 0.1
@@ -255,10 +281,11 @@ class IndexPage extends React.Component {
             }}
           >
             +
-          </Button>
+          </PrimaryButton>
         </div>
         <div>
-          Size: {this.state.stateImg.w} x {this.state.stateImg.h}
+          Size: {Math.round(this.state.stateImg.w)} x{" "}
+          {Math.round(this.state.stateImg.h)}
         </div>
         <div>
           <img
