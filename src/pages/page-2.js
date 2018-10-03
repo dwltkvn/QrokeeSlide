@@ -3,9 +3,34 @@ import * as THREE from "three";
 //import Hammer from "hammerjs";
 import { navigate } from "gatsby";
 
+import FabButton from "../components/fab";
 import Layout from "../components/layout";
+
+import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
+import GestureIcon from "@material-ui/icons/Gesture";
+import BrushIcon from "@material-ui/icons/Brush";
+
+const styles = theme => ({
+  fab: {
+    position: "fixed",
+    bottom: theme.spacing.unit * 4,
+    right: theme.spacing.unit * 4
+    /*display: "flex",
+    flexDirection: "column",
+    border: "red",
+    borderStyle: "solid",
+    borderWidth: "0px"*/
+  },
+  colfab: {
+    display: "flex",
+    flexDirection: "column",
+    border: "red",
+    borderStyle: "solid",
+    borderWidth: "0px"
+  }
+});
 
 class ThreeTest extends React.Component {
   constructor(props) {
@@ -334,6 +359,8 @@ class ThreeTest extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
+
     return (
       <Layout>
         {this.state.stateError ? (
@@ -356,6 +383,16 @@ class ThreeTest extends React.Component {
               }}
               message={<span id="message-id">Session restored</span>}
             />
+            <div className={classes.fab}>
+              <div className={classes.colfab}>
+                <FabButton title="Colorize" onClick={this.handleColorizeClick}>
+                  <BrushIcon />
+                </FabButton>
+                <FabButton title="Carve" onClick={this.handleSculptClick}>
+                  <GestureIcon />
+                </FabButton>
+              </div>
+            </div>
             <canvas ref={el => (this.canvas = el)} />
           </div>
         )}
@@ -364,4 +401,4 @@ class ThreeTest extends React.Component {
   }
 }
 
-export default ThreeTest;
+export default withStyles(styles)(ThreeTest);
