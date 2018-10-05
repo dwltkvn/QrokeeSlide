@@ -129,13 +129,19 @@ class IndexPage extends React.Component {
         const h = image.bitmap.height;
         const w = image.bitmap.width;
         let pow2H, pow2W;
-        if (h > w) {
+        /*if (h > w) {
           pow2H = Math.round(Math.log2(h));
-          pow2W = Math.floor(Math.log2(w));
-        } else {
+          //pow2W = Math.floor(Math.log2(w));
+          pow2W = Math.round(Math.log2(w));
+        } else if (w < h) {
           pow2H = Math.floor(Math.log2(h));
           pow2W = Math.round(Math.log2(w));
-        }
+        } else {
+          pow2H = Math.round(Math.log2(h));
+          pow2W = Math.round(Math.log2(w));
+        }*/
+        pow2H = Math.round(Math.log2(h));
+        pow2W = Math.round(Math.log2(w));
         const newW = Math.pow(2, pow2W);
         const newH = Math.pow(2, pow2H);
         //image.crop(0, newW, 0, newH);

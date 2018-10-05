@@ -9,8 +9,11 @@ import Layout from "../components/layout";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
+
+import Slide from "@material-ui/core/Slide";
+
 import GestureIcon from "@material-ui/icons/Gesture";
-import BrushIcon from "@material-ui/icons/Brush";
+import GridIcon from "@material-ui/icons/ViewModule";
 
 const styles = theme => ({
   fab: {
@@ -37,7 +40,8 @@ class ThreeTest extends React.Component {
     super(props);
     this.state = {
       stateError: false,
-      openNotification: false
+      openNotification: false,
+      stateShowUI: false
     };
 
     this.animObj = {
@@ -99,13 +103,14 @@ class ThreeTest extends React.Component {
       var doubleTap = new Hammer.Tap({ event: "doubletap", taps: 2 });
       var press = new Hammer.Press();
       const swipe = new Hammer.Swipe({});
-      this.hammertime.add([swipe, press, doubleTap]);
+      this.hammertime.add([swipe, press, doubleTap, singleTap]);
       doubleTap.recognizeWith(singleTap);
       singleTap.requireFailure(doubleTap);
 
       //this.hammertime.on("singletap", () => this.onSingleTap());
       this.hammertime.on("press", () => this.onPress());
       this.hammertime.on("pressup", () => this.onPressUp());
+      this.hammertime.on("singletap", () => this.onSingleTap());
       this.hammertime.on("doubletap", () => this.onDoubleTap());
       this.hammertime.on("swipeleft", () => this.onSwipeLeft());
       this.hammertime.on("swiperight", () => this.onSwipeRight());
@@ -162,7 +167,7 @@ class ThreeTest extends React.Component {
 
     // GEOMETRY - Create our only geometry: a cube.
     //const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const geometry = new THREE.PlaneGeometry(0.999, 0.999, 0.999);
+    const geometry = new THREE.PlaneGeometry(1, 1, 1);
     const markerGeom = new THREE.CircleGeometry(0.1, 3);
 
     // MATERIAL - create the default material
@@ -207,11 +212,41 @@ class ThreeTest extends React.Component {
         cube.position.set(i, -j, -1);
         scene.add(cube);
 
-        const c = circle.clone();
+        /*const c = circle.clone();
         c.position.set(i, -j, 0);
-        scene.add(c);
+        scene.add(c);*/
       }
     }
+
+    // LINES
+    var material = new THREE.LineBasicMaterial({
+      color: 0xff00ff
+    });
+
+    this.linesGroup = new THREE.Group();
+
+    for (let i = -0.5; i <= 0.5; i += 0.25) {
+      var geomLine = new THREE.Geometry();
+      geomLine.vertices.push(
+        new THREE.Vector3(-0.5, i, 0),
+        new THREE.Vector3(0.5, i, 0)
+      );
+      this.linesGroup.add(new THREE.Line(geomLine, material));
+    }
+
+    for (let j = -0.5; j <= 0.5; j += 0.25) {
+      var geomLine = new THREE.Geometry();
+      geomLine.vertices.push(
+        new THREE.Vector3(j, -0.5, 0),
+        new THREE.Vector3(j, 0.5, 0)
+      );
+      this.linesGroup.add(new THREE.Line(geomLine, material));
+    }
+
+    //this.linesGroup.add(new THREE.Line(geomLine1, material));
+    //this.linesGroup.add(new THREE.Line(geomLine2, material));
+
+    scene.add(this.linesGroup);
 
     // LIGHT -
     const light_a = (this.light = new THREE.AmbientLight(0xffffff));
@@ -239,6 +274,7 @@ class ThreeTest extends React.Component {
       if (this.camera.position.x === this.animObj.end) {
         this.animObj.moveX = false;
         this.camera.position.x = this.animObj.end;
+        this.linesGroup.position.x = this.animObj.end;
       }
     }
 
@@ -251,6 +287,7 @@ class ThreeTest extends React.Component {
       if (this.camera.position.y === this.animObj.end) {
         this.animObj.moveY = false;
         this.camera.position.y = this.animObj.end;
+        this.linesGroup.position.y = this.animObj.end;
       }
     }
 
@@ -294,9 +331,10 @@ class ThreeTest extends React.Component {
     this.light.intensity = 1.0;
   }
   onSingleTap() {
-    this.light.intensity -= 0.5;
-    if (this.light.intensity === 0) this.light.intensity = 0.1;
-    if (this.light.intensity < 0) this.light.intensity = 1.0;
+    console.log("Single tap");
+    this.setState((prevState, props) => ({
+      stateShowUI: !prevState.stateShowUI
+    }));
   }
   onDoubleTap() {
     this.animObj.rotate = Math.PI / 2;
@@ -384,14 +422,18 @@ class ThreeTest extends React.Component {
               message={<span id="message-id">Session restored</span>}
             />
             <div className={classes.fab}>
-              <div className={classes.colfab}>
-                <FabButton title="Colorize" onClick={this.handleColorizeClick}>
-                  <BrushIcon />
-                </FabButton>
-                <FabButton title="Carve" onClick={this.handleSculptClick}>
-                  <GestureIcon />
-                </FabButton>
-              </div>
+              <Slide in={this.state.stateShowUI} direction="left">
+                <div className={classes.colfab}>
+                  <FabButton
+                    title="Grid"
+                    onClick={() =>
+                      (this.linesGroup.visible = !this.linesGroup.visible)
+                    }
+                  >
+                    <GridIcon />
+                  </FabButton>
+                </div>
+              </Slide>
             </div>
             <canvas ref={el => (this.canvas = el)} />
           </div>
