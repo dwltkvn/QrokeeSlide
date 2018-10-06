@@ -222,32 +222,35 @@ class ThreeTest extends React.Component {
     }
 
     // LINES
-    var material = new THREE.LineBasicMaterial({
+    const material = new THREE.LineBasicMaterial({
       color: 0xff00ff
+    });
+    const material2 = new THREE.LineBasicMaterial({
+      color: 0x000000
     });
 
     this.linesGroup = new THREE.Group();
     this.tickGroup = new THREE.Group();
 
     for (let i = -0.5; i <= 0.5; i += 0.25) {
-      var geomLine = new THREE.Geometry();
+      const geomLine = new THREE.Geometry();
       geomLine.vertices.push(
         new THREE.Vector3(-0.5, i, 0),
         new THREE.Vector3(0.5, i, 0)
       );
       this.linesGroup.add(new THREE.Line(geomLine, material));
       for (let j = -0.5; j <= 0.5; j += 0.05) {
-        var tickLine = new THREE.Geometry();
+        const tickLine = new THREE.Geometry();
         tickLine.vertices.push(
           new THREE.Vector3(j, i - 0.005, 0),
           new THREE.Vector3(j, i + 0.005, 0)
         );
-        this.tickGroup.add(new THREE.Line(tickLine, material));
+        this.tickGroup.add(new THREE.Line(tickLine, material2));
       }
     }
 
     for (let j = -0.5; j <= 0.5; j += 0.25) {
-      var geomLine = new THREE.Geometry();
+      const geomLine = new THREE.Geometry();
       geomLine.vertices.push(
         new THREE.Vector3(j, -0.5, 0),
         new THREE.Vector3(j, 0.5, 0)
@@ -255,17 +258,14 @@ class ThreeTest extends React.Component {
       this.linesGroup.add(new THREE.Line(geomLine, material));
 
       for (let i = -0.5; i <= 0.5; i += 0.05) {
-        var tickLine = new THREE.Geometry();
+        const tickLine = new THREE.Geometry();
         tickLine.vertices.push(
           new THREE.Vector3(j - 0.005, i, 0),
           new THREE.Vector3(j + 0.005, i, 0)
         );
-        this.tickGroup.add(new THREE.Line(tickLine, material));
+        this.tickGroup.add(new THREE.Line(tickLine, material2));
       }
     }
-
-    //this.linesGroup.add(new THREE.Line(geomLine1, material));
-    //this.linesGroup.add(new THREE.Line(geomLine2, material));
 
     scene.add(this.linesGroup);
     scene.add(this.tickGroup);
@@ -297,6 +297,7 @@ class ThreeTest extends React.Component {
         this.animObj.moveX = false;
         this.camera.position.x = this.animObj.end;
         this.linesGroup.position.x = this.animObj.end;
+        this.tickGroup.position.x = this.animObj.end;
       }
     }
 
@@ -310,6 +311,7 @@ class ThreeTest extends React.Component {
         this.animObj.moveY = false;
         this.camera.position.y = this.animObj.end;
         this.linesGroup.position.y = this.animObj.end;
+        this.tickGroup.position.y = this.animObj.end;
       }
     }
 
@@ -420,20 +422,20 @@ class ThreeTest extends React.Component {
 
   handleGridDisplay() {
     if (this.displayGridMode === ThreeTest.DISPLAY_GRID.DISPLAY_GRID_NONE) {
-      this.linesGroup.visible = false;
+      this.linesGroup.visible = true;
       this.tickGroup.visible = false;
       this.displayGridMode = ThreeTest.DISPLAY_GRID.DISPLAY_GRID_ONLY;
     } else if (
       this.displayGridMode === ThreeTest.DISPLAY_GRID.DISPLAY_GRID_ONLY
     ) {
       this.linesGroup.visible = true;
-      this.tickGroup.visible = false;
+      this.tickGroup.visible = true;
       this.displayGridMode = ThreeTest.DISPLAY_GRID.DISPLAY_GRID_TICK;
     } else if (
       this.displayGridMode === ThreeTest.DISPLAY_GRID.DISPLAY_GRID_TICK
     ) {
-      this.linesGroup.visible = true;
-      this.tickGroup.visible = true;
+      this.linesGroup.visible = false;
+      this.tickGroup.visible = false;
       this.displayGridMode = ThreeTest.DISPLAY_GRID.DISPLAY_GRID_NONE;
     }
   }
