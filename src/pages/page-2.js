@@ -52,6 +52,8 @@ class ThreeTest extends React.Component {
       tDelta: 0.1
     };
 
+    this.displayGridMode = ThreeTest.DISPLAY_GRID.DISPLAY_GRID_TICK;
+
     this.displaySize = 0.5; // default : 0.5
     this.rotationOrientation = 0;
     this.ambiantIntensity = 1.0;
@@ -72,6 +74,7 @@ class ThreeTest extends React.Component {
     this.translateY = this.translateY.bind(this);
 
     this.onAnim = this.onAnim.bind(this);
+    this.handleGridDisplay = this.handleGridDisplay.bind(this);
   }
 
   componentDidMount() {
@@ -224,6 +227,7 @@ class ThreeTest extends React.Component {
     });
 
     this.linesGroup = new THREE.Group();
+    this.tickGroup = new THREE.Group();
 
     for (let i = -0.5; i <= 0.5; i += 0.25) {
       var geomLine = new THREE.Geometry();
@@ -232,6 +236,14 @@ class ThreeTest extends React.Component {
         new THREE.Vector3(0.5, i, 0)
       );
       this.linesGroup.add(new THREE.Line(geomLine, material));
+      for (let j = -0.5; j <= 0.5; j += 0.05) {
+        var tickLine = new THREE.Geometry();
+        tickLine.vertices.push(
+          new THREE.Vector3(j, i - 0.005, 0),
+          new THREE.Vector3(j, i + 0.005, 0)
+        );
+        this.tickGroup.add(new THREE.Line(tickLine, material));
+      }
     }
 
     for (let j = -0.5; j <= 0.5; j += 0.25) {
@@ -241,12 +253,22 @@ class ThreeTest extends React.Component {
         new THREE.Vector3(j, 0.5, 0)
       );
       this.linesGroup.add(new THREE.Line(geomLine, material));
+
+      for (let i = -0.5; i <= 0.5; i += 0.05) {
+        var tickLine = new THREE.Geometry();
+        tickLine.vertices.push(
+          new THREE.Vector3(j - 0.005, i, 0),
+          new THREE.Vector3(j + 0.005, i, 0)
+        );
+        this.tickGroup.add(new THREE.Line(tickLine, material));
+      }
     }
 
     //this.linesGroup.add(new THREE.Line(geomLine1, material));
     //this.linesGroup.add(new THREE.Line(geomLine2, material));
 
     scene.add(this.linesGroup);
+    scene.add(this.tickGroup);
 
     // LIGHT -
     const light_a = (this.light = new THREE.AmbientLight(0xffffff));
@@ -396,6 +418,26 @@ class ThreeTest extends React.Component {
     else if (this.rotationOrientation === 3) this.translateX(+0.5);
   }
 
+  handleGridDisplay() {
+    if (this.displayGridMode === ThreeTest.DISPLAY_GRID.DISPLAY_GRID_NONE) {
+      this.linesGroup.visible = false;
+      this.tickGroup.visible = false;
+      this.displayGridMode = ThreeTest.DISPLAY_GRID.DISPLAY_GRID_ONLY;
+    } else if (
+      this.displayGridMode === ThreeTest.DISPLAY_GRID.DISPLAY_GRID_ONLY
+    ) {
+      this.linesGroup.visible = true;
+      this.tickGroup.visible = false;
+      this.displayGridMode = ThreeTest.DISPLAY_GRID.DISPLAY_GRID_TICK;
+    } else if (
+      this.displayGridMode === ThreeTest.DISPLAY_GRID.DISPLAY_GRID_TICK
+    ) {
+      this.linesGroup.visible = true;
+      this.tickGroup.visible = true;
+      this.displayGridMode = ThreeTest.DISPLAY_GRID.DISPLAY_GRID_NONE;
+    }
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -426,9 +468,7 @@ class ThreeTest extends React.Component {
                 <div className={classes.colfab}>
                   <FabButton
                     title="Grid"
-                    onClick={() =>
-                      (this.linesGroup.visible = !this.linesGroup.visible)
-                    }
+                    onClick={() => this.handleGridDisplay()}
                   >
                     <GridIcon />
                   </FabButton>
@@ -442,5 +482,11 @@ class ThreeTest extends React.Component {
     );
   }
 }
+
+ThreeTest.DISPLAY_GRID = Object.freeze({
+  DISPLAY_GRID_NONE: Symbol("displaygridnone"),
+  DISPLAY_GRID_ONLY: Symbol("displaygridonly"),
+  DISPLAY_GRID_TICK: Symbol("displaygridtick")
+});
 
 export default withStyles(styles)(ThreeTest);

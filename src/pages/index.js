@@ -4,6 +4,7 @@ import { graphql } from "gatsby";
 
 import Layout from "../components/layout";
 import Button from "@material-ui/core/Button";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 const PrimaryButton = ({ children, ...props }) => (
   <Button variant="contained" color="primary" {...props}>
@@ -27,7 +28,8 @@ class IndexPage extends React.Component {
       stateNbSlide: { w: 0, h: 2 },
       stateImg: { w: 0, h: 0 },
       stateIntensity: 0.5,
-      statePreviousSessionAvailable: false
+      statePreviousSessionAvailable: false,
+      stateImageLoading: false
     };
   }
 
@@ -95,6 +97,7 @@ class IndexPage extends React.Component {
   }
 
   displaySelectedImage() {
+    this.setState({ stateImageLoading: false });
     const img = new Image();
     img.onload = () => {
       this.imageRef.width = img.width / 10;
@@ -126,6 +129,11 @@ class IndexPage extends React.Component {
         //image.resize(512, 512);
         //const pow2H = Math.log()
         //console.log(image.bitmap.width);
+
+        //image.scale(0.25);
+        //image.convolute([[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]]);
+        //image.scale(4.0);
+
         const h = image.bitmap.height;
         const w = image.bitmap.width;
         let pow2H, pow2W;
@@ -147,6 +155,7 @@ class IndexPage extends React.Component {
 
         //image.resize(Jimp.AUTO, newH);
         image.cover(newW, newH);
+        //image.convolute([[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]]);
 
         image.getBase64(Jimp.AUTO, (err, data) => {
           this.imgData = data;
@@ -165,6 +174,7 @@ class IndexPage extends React.Component {
       console.log(file.name);
     });
 
+    this.setState({ stateImageLoading: true });
     var reader = new FileReader();
     reader.onload = this.onFileLoaded;
     reader.readAsDataURL(this.inputRef.files[0]);
@@ -182,11 +192,13 @@ class IndexPage extends React.Component {
   render() {
     return (
       <Layout>
+        {this.state.stateImageLoading ? <LinearProgress /> : null}
         <h1>
           {this.props.data.site.siteMetadata.title} v{
             this.props.data.site.siteMetadata.version
           }
         </h1>
+
         <input
           id="uploadInput"
           type="file"
