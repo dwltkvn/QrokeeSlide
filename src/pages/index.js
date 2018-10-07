@@ -5,6 +5,7 @@ import { graphql } from "gatsby";
 import Layout from "../components/layout";
 import Button from "@material-ui/core/Button";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import Switch from "@material-ui/core/Switch";
 
 const PrimaryButton = ({ children, ...props }) => (
   <Button variant="contained" color="primary" {...props}>
@@ -29,7 +30,9 @@ class IndexPage extends React.Component {
       stateImg: { w: 0, h: 0 },
       stateIntensity: 0.5,
       statePreviousSessionAvailable: false,
-      stateImageLoading: false
+      stateImageLoading: false,
+      stateVFlip: false,
+      stateHFlip: false
     };
   }
 
@@ -156,6 +159,7 @@ class IndexPage extends React.Component {
         //image.resize(Jimp.AUTO, newH);
         image.cover(newW, newH);
         //image.convolute([[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]]);
+        image.flip(this.state.stateHFlip, this.state.stateVFlip);
 
         image.getBase64(Jimp.AUTO, (err, data) => {
           this.imgData = data;
@@ -208,7 +212,30 @@ class IndexPage extends React.Component {
           ref={elem => (this.inputRef = elem)}
           style={{ display: "none" }}
         />
-        <PrimaryButton onClick={() => this.inputRef.click()}>
+        <div>
+          <Switch
+            disabled={this.state.stateImageLoaded}
+            onChange={() => {
+              this.setState(prev => ({ stateHFlip: !prev.stateHFlip }));
+            }}
+            value="Horizontal Flip"
+            color="primary"
+          />
+          HFlip
+          <Switch
+            disabled={this.state.stateImageLoaded}
+            onChange={() => {
+              this.setState(prev => ({ stateVFlip: !prev.stateVFlip }));
+            }}
+            value="Vertical Flip"
+            color="primary"
+          />
+          VFlip
+        </div>
+        <PrimaryButton
+          onClick={() => this.inputRef.click()}
+          disabled={this.state.stateImageLoading}
+        >
           Select Image
         </PrimaryButton>
         <PrimaryButton
