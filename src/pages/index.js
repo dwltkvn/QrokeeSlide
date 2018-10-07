@@ -5,6 +5,7 @@ import { graphql } from "gatsby";
 import Layout from "../components/layout";
 import Button from "@material-ui/core/Button";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 
 const PrimaryButton = ({ children, ...props }) => (
@@ -213,24 +214,32 @@ class IndexPage extends React.Component {
           style={{ display: "none" }}
         />
         <div>
-          <Switch
-            disabled={this.state.stateImageLoaded}
-            onChange={() => {
-              this.setState(prev => ({ stateHFlip: !prev.stateHFlip }));
-            }}
-            value="Horizontal Flip"
-            color="primary"
+          <FormControlLabel
+            control={
+              <Switch
+                disabled={this.state.stateImageLoaded}
+                onChange={() => {
+                  this.setState(prev => ({ stateHFlip: !prev.stateHFlip }));
+                }}
+                value="Horizontal Flip"
+                color="primary"
+              />
+            }
+            label="HFlip"
           />
-          HFlip
-          <Switch
-            disabled={this.state.stateImageLoaded}
-            onChange={() => {
-              this.setState(prev => ({ stateVFlip: !prev.stateVFlip }));
-            }}
-            value="Vertical Flip"
-            color="primary"
+          <FormControlLabel
+            control={
+              <Switch
+                disabled={this.state.stateImageLoaded}
+                onChange={() => {
+                  this.setState(prev => ({ stateVFlip: !prev.stateVFlip }));
+                }}
+                value="Vertical Flip"
+                color="primary"
+              />
+            }
+            label="VFlip"
           />
-          VFlip
         </div>
         <PrimaryButton
           onClick={() => this.inputRef.click()}
