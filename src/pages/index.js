@@ -135,7 +135,25 @@ class IndexPage extends React.Component {
         //console.log(image.bitmap.width);
 
         //image.scale(0.25);
-        //image.convolute([[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]]);
+        image.greyscale();
+        const kernel = [[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]];
+        image.convolute(kernel);
+
+        let threshold = 200;
+        image.scan(0, 0, image.bitmap.width, image.bitmap.height, function(
+          x,
+          y,
+          idx
+        ) {
+          if (image.bitmap.data[idx] <= threshold) image.bitmap.data[idx] = 0;
+          if (image.bitmap.data[idx + 1] <= threshold)
+            image.bitmap.data[idx + 1] = 0;
+          if (image.bitmap.data[idx + 2] <= threshold)
+            image.bitmap.data[idx + 2] = 0;
+        });
+
+        image.invert();
+
         //image.scale(4.0);
 
         const h = image.bitmap.height;
@@ -159,7 +177,6 @@ class IndexPage extends React.Component {
 
         //image.resize(Jimp.AUTO, newH);
         image.cover(newW, newH);
-        //image.convolute([[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]]);
         image.flip(this.state.stateHFlip, this.state.stateVFlip);
 
         image.getBase64(Jimp.AUTO, (err, data) => {
@@ -217,7 +234,6 @@ class IndexPage extends React.Component {
           <FormControlLabel
             control={
               <Switch
-                disabled={this.state.stateImageLoaded}
                 onChange={() => {
                   this.setState(prev => ({ stateHFlip: !prev.stateHFlip }));
                 }}
@@ -230,7 +246,6 @@ class IndexPage extends React.Component {
           <FormControlLabel
             control={
               <Switch
-                disabled={this.state.stateImageLoaded}
                 onChange={() => {
                   this.setState(prev => ({ stateVFlip: !prev.stateVFlip }));
                 }}
