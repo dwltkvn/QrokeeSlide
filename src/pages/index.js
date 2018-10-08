@@ -3,6 +3,8 @@ import { navigate } from "gatsby";
 import { graphql } from "gatsby";
 
 import Layout from "../components/layout";
+import Nouislider from "../components/nouisliderWrapper";
+
 import Button from "@material-ui/core/Button";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -375,6 +377,9 @@ class IndexPage extends React.Component {
           >
             +
           </PrimaryButton>
+        </div>
+        <div>
+          <Nouislider range={{ min: 0, max: 200 }} start={[0, 100]} tooltips />
         </div>
         <div>
           Size: {Math.round(this.state.stateImg.w)} x{" "}
