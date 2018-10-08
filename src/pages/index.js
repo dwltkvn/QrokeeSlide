@@ -10,6 +10,9 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 
+import WebWorkerUtility from "../workers/webWorkerUtility";
+import Worker1 from "../workers/worker1";
+
 const PrimaryButton = ({ children, ...props }) => (
   <Button variant="contained" color="primary" {...props}>
     {children}
@@ -35,7 +38,8 @@ class IndexPage extends React.Component {
       statePreviousSessionAvailable: false,
       stateImageLoading: false,
       stateVFlip: false,
-      stateHFlip: false
+      stateHFlip: false,
+      stateCount: 0
     };
   }
 
@@ -44,6 +48,14 @@ class IndexPage extends React.Component {
     const localStorageState = localStorage.getItem("myState");
     if (localStorageState)
       this.setState({ statePreviousSessionAvailable: true });
+
+    if (window.Worker) {
+      this.worker = new WebWorkerUtility(Worker1);
+      this.worker.addEventListener("message", event => {
+        console.log("event received");
+        this.setState({ stateCount: event.data.length });
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -192,6 +204,9 @@ class IndexPage extends React.Component {
   }
 
   onFilesSelected(e) {
+    this.worker.postMessage("Fetch Users");
+
+    return;
     console.log(this.inputRef.files);
 
     Array.from(this.inputRef.files).forEach(file => {
@@ -220,7 +235,8 @@ class IndexPage extends React.Component {
         <h1>
           {this.props.data.site.siteMetadata.title} v{
             this.props.data.site.siteMetadata.version
-          }
+          }{" "}
+          {this.state.stateCount}
         </h1>
 
         <input
