@@ -31,7 +31,6 @@ const Layout = ({ children, location }) => (
             }
           ]}
         >
-          <script src="https://cdn.jsdelivr.net/npm/jimp@0.5.3/browser/lib/jimp.min.js" />
           <html lang="en" />
         </Helmet>
         <div>{children}</div>

@@ -2,6 +2,9 @@ import React from "react";
 import { navigate } from "gatsby";
 import { graphql } from "gatsby";
 
+//import IJS from "image-js";
+import JIMP from "jimp";
+
 import Layout from "../components/layout";
 import Nouislider from "../components/nouisliderWrapper";
 
@@ -136,8 +139,18 @@ class IndexPage extends React.Component {
   }
 
   onFileLoaded(e) {
-    const Jimp = window.Jimp;
-    Jimp.read(e.target.result)
+    /*IJS.load(e.target.result)
+      .then(image => console.log(image))
+      .catch(err => {
+        console.log(err);
+      });*/
+    /*this.imgData = e.target.result;
+    this.displaySelectedImage();*/
+
+    //return;
+
+    //const Jimp = window.Jimp;
+    JIMP.read(e.target.result)
       .then(image => {
         /*image.color([
           { apply: "greyscale", params: [100] }
@@ -193,7 +206,7 @@ class IndexPage extends React.Component {
         image.cover(newW, newH);
         image.flip(this.state.stateHFlip, this.state.stateVFlip);
 
-        image.getBase64(Jimp.AUTO, (err, data) => {
+        image.getBase64(JIMP.AUTO, (err, data) => {
           this.imgData = data;
           this.displaySelectedImage();
         });
@@ -204,9 +217,9 @@ class IndexPage extends React.Component {
   }
 
   onFilesSelected(e) {
-    this.worker.postMessage("Fetch Users");
+    /*this.worker.postMessage("Fetch Users");
 
-    return;
+    return;*/
     console.log(this.inputRef.files);
 
     Array.from(this.inputRef.files).forEach(file => {
