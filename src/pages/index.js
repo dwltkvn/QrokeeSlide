@@ -39,7 +39,8 @@ class IndexPage extends React.Component {
       stateImageLoading: false,
       stateVFlip: false,
       stateHFlip: false,
-      stateCount: 0
+      stateCount: 0,
+      stateMounted: false
     };
   }
 
@@ -60,6 +61,8 @@ class IndexPage extends React.Component {
     this.updateScripts = this.updateScripts.bind(this);
     window.addEventListener("online", this.updateScripts);
     this.updateScripts();
+
+    this.setState({ stateMounted: true });
   }
 
   componentWillUnmount() {
@@ -291,7 +294,7 @@ class IndexPage extends React.Component {
   }
 
   render() {
-    return (
+    return !this.state.stateMounted ? null : (
       <Layout>
         {this.state.stateImageLoading ? <LinearProgress /> : null}
         <h1>
