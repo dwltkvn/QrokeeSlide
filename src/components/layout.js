@@ -31,6 +31,7 @@ const Layout = ({ children, location }) => (
             }
           ]}
         >
+          <script src="https://www.lactame.com/lib/image-js/0.21.2/image.min.js" />
           <html lang="en" />
         </Helmet>
         <div>{children}</div>

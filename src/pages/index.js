@@ -1,9 +1,10 @@
 import React from "react";
 import { navigate } from "gatsby";
 import { graphql } from "gatsby";
+//import * as IJS from "../image.js";
 
 //import IJS from "image-js";
-import JIMP from "jimp";
+//import JIMP from "jimp";
 
 import Layout from "../components/layout";
 import Nouislider from "../components/nouisliderWrapper";
@@ -15,6 +16,8 @@ import Switch from "@material-ui/core/Switch";
 
 import WebWorkerUtility from "../workers/webWorkerUtility";
 import Worker1 from "../workers/worker1";
+
+//var IJS = require("../image.min.js");
 
 const PrimaryButton = ({ children, ...props }) => (
   <Button variant="contained" color="primary" {...props}>
@@ -139,24 +142,34 @@ class IndexPage extends React.Component {
   }
 
   onFileLoaded(e) {
-    /*IJS.load(e.target.result)
-      .then(image => console.log(image))
+    const IJS = window.IJS;
+    IJS.Image.load(e.target.result)
+      .then(image => {
+        let grey = image.grey();
+
+        if (this.state.stateHFlip) grey.flipX();
+        if (this.state.stateVFlip) grey.flipY();
+
+        this.imgData = grey.toDataURL();
+        this.displaySelectedImage();
+      })
       .catch(err => {
         console.log(err);
-      });*/
-    /*this.imgData = e.target.result;
-    this.displaySelectedImage();*/
+      });
+    //this.imgData = e.target.result;
+    //this.displaySelectedImage();
 
     //return;
 
     //const Jimp = window.Jimp;
+    /*
     JIMP.read(e.target.result)
       .then(image => {
-        /*image.color([
+        image.color([
           { apply: "greyscale", params: [100] }
           //{ apply: "shade", params: [50] }
         ]);
-        image.normalize();*/
+        //image.normalize();
         //image.resize(512, 512);
         //const pow2H = Math.log()
         //console.log(image.bitmap.width);
@@ -214,6 +227,7 @@ class IndexPage extends React.Component {
       .catch(err => {
         console.log(err);
       });
+      */
   }
 
   onFilesSelected(e) {
