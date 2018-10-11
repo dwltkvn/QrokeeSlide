@@ -26,9 +26,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "prettier": "^1.14.2",
-    "script-loader": "^0.7.2",
-    "expose-loader": "^0.7.5"
+    "prettier": "^1.14.2"
   },
   "repository": {
     "type": "git",

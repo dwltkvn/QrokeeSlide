@@ -1,11 +1,6 @@
 import React from "react";
 import { navigate } from "gatsby";
 import { graphql } from "gatsby";
-//import * as IJS from "../image.js";
-
-import "script-loader!../image.js";
-//import IJS from "image-js";
-//import JIMP from "jimp";
 
 import Layout from "../components/layout";
 import Nouislider from "../components/nouisliderWrapper";
@@ -17,8 +12,6 @@ import Switch from "@material-ui/core/Switch";
 
 import WebWorkerUtility from "../workers/webWorkerUtility";
 import Worker1 from "../workers/worker1";
-
-//var IJS = require("../image.min.js");
 
 const PrimaryButton = ({ children, ...props }) => (
   <Button variant="contained" color="primary" {...props}>
@@ -63,12 +56,54 @@ class IndexPage extends React.Component {
         this.setState({ stateCount: event.data.length });
       });
     }
+
+    this.updateScripts = this.updateScripts.bind(this);
+    window.addEventListener("online", this.updateScripts);
+    this.updateScripts();
   }
 
   componentWillUnmount() {
     //window.removeEventListener("event", this.handleEvent);
   }
 
+  updateScripts() {
+    if (!window.navigator.onLine) {
+      return;
+    }
+
+    if (!this.isIJSLoaded()) {
+      return this.loadIJS().then(this.updateScripts);
+    }
+  }
+
+  isIJSLoaded() {
+    console.log(!!window.IJS);
+    return !!window.IJS;
+  }
+
+  loadIJS() {
+    return this.addElem("script", {
+      async: true,
+      src: "https://www.lactame.com/lib/image-js/0.21.2/image.min.js"
+    });
+  }
+
+  addElem(tag, attrs) {
+    return new Promise((resolve, reject) => {
+      var el = document.createElement(tag);
+      el.onload = resolve;
+      el.onerror = reject;
+
+      var keys = Object.keys(attrs);
+
+      for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        el.setAttribute(key, attrs[key]);
+      }
+
+      document.head.appendChild(el);
+    });
+  }
   computeNbSlideW(pNbSlideH, pImgW, pImgH) {
     const nbSlideH = pNbSlideH;
     const cubeside = pImgH / nbSlideH;
@@ -143,10 +178,8 @@ class IndexPage extends React.Component {
   }
 
   onFileLoaded(e) {
-    //const IJS = window.Image;
-    //const IJS = require("IJS");
-    //require("expose-loader?IJS!../image.js");
-    window.Image.load(e.target.result)
+    const IJS = window.IJS;
+    IJS.Image.load(e.target.result)
       .then(image => {
         let grey = image.grey();
 
