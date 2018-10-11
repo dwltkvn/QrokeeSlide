@@ -3,6 +3,7 @@ import { navigate } from "gatsby";
 import { graphql } from "gatsby";
 //import * as IJS from "../image.js";
 
+import "script-loader!../image.js";
 //import IJS from "image-js";
 //import JIMP from "jimp";
 
@@ -142,8 +143,10 @@ class IndexPage extends React.Component {
   }
 
   onFileLoaded(e) {
-    const IJS = window.IJS;
-    IJS.Image.load(e.target.result)
+    //const IJS = window.Image;
+    //const IJS = require("IJS");
+    //require("expose-loader?IJS!../image.js");
+    window.Image.load(e.target.result)
       .then(image => {
         let grey = image.grey();
 

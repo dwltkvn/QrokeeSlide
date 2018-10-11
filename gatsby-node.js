@@ -6,6 +6,13 @@ exports.onCreateWebpackConfig = ({
   actions
 }) => {
   actions.setWebpackConfig({
-    module: {}
+    module: {
+      rules: [
+        {
+          test: /image\.js$/,
+          use: ["script-loader"]
+        }
+      ]
+    }
   });
 };
