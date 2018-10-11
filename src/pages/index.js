@@ -77,7 +77,6 @@ class IndexPage extends React.Component {
   }
 
   isIJSLoaded() {
-    console.log(!!window.IJS);
     return !!window.IJS;
   }
 
