@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "prettier": "^1.14.2",
-    "script-load": "^0.7.2"
+    "script-loader": "^0.7.2"
   },
   "repository": {
     "type": "git",
