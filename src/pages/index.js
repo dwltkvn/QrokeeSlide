@@ -13,6 +13,8 @@ import Switch from "@material-ui/core/Switch";
 import WebWorkerUtility from "../workers/webWorkerUtility";
 import Worker1 from "../workers/worker1";
 
+import Fade from "@material-ui/core/Fade";
+
 const PrimaryButton = ({ children, ...props }) => (
   <Button variant="contained" color="primary" {...props}>
     {children}
@@ -62,7 +64,16 @@ class IndexPage extends React.Component {
     window.addEventListener("online", this.updateScripts);
     this.updateScripts();
 
-    this.setState({ stateMounted: true });
+    console.log("mounted");
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (!prevState.stateMounted) {
+      console.log("set mounted");
+      this.setState({ stateMounted: true });
+    }
+    console.log("updated");
+    console.log(prevState.stateMounted);
   }
 
   componentWillUnmount() {
@@ -294,7 +305,7 @@ class IndexPage extends React.Component {
   }
 
   render() {
-    return !this.state.stateMounted ? null : (
+    return (
       <Layout>
         {this.state.stateImageLoading ? <LinearProgress /> : null}
         <h1>
@@ -304,177 +315,187 @@ class IndexPage extends React.Component {
           {this.state.stateCount}
         </h1>
 
-        <input
-          id="uploadInput"
-          type="file"
-          name="myFiles"
-          onChange={() => this.onFilesSelected()}
-          multiple
-          ref={elem => (this.inputRef = elem)}
-          style={{ display: "none" }}
-        />
-        <div>
-          <FormControlLabel
-            control={
-              <Switch
-                onChange={() => {
-                  this.setState(prev => ({ stateHFlip: !prev.stateHFlip }));
-                }}
-                value="Horizontal Flip"
-                color="primary"
+        <Fade in={this.state.stateMounted}>
+          <div>
+            <input
+              id="uploadInput"
+              type="file"
+              name="myFiles"
+              onChange={() => this.onFilesSelected()}
+              multiple
+              ref={elem => (this.inputRef = elem)}
+              style={{ display: "none" }}
+            />
+            <div>
+              <FormControlLabel
+                control={
+                  <Switch
+                    onChange={() => {
+                      this.setState(prev => ({ stateHFlip: !prev.stateHFlip }));
+                    }}
+                    value="Horizontal Flip"
+                    color="primary"
+                  />
+                }
+                label="HFlip"
               />
-            }
-            label="HFlip"
-          />
-          <FormControlLabel
-            control={
-              <Switch
-                onChange={() => {
-                  this.setState(prev => ({ stateVFlip: !prev.stateVFlip }));
-                }}
-                value="Vertical Flip"
-                color="primary"
+              <FormControlLabel
+                control={
+                  <Switch
+                    onChange={() => {
+                      this.setState(prev => ({ stateVFlip: !prev.stateVFlip }));
+                    }}
+                    value="Vertical Flip"
+                    color="primary"
+                  />
+                }
+                label="VFlip"
               />
-            }
-            label="VFlip"
-          />
-        </div>
-        <PrimaryButton
-          onClick={() => this.inputRef.click()}
-          disabled={this.state.stateImageLoading}
-        >
-          Select Image
-        </PrimaryButton>
-        <PrimaryButton
-          role="link"
-          disabled={!this.state.stateImageLoaded}
-          onClick={() =>
-            navigate("/page-2/", {
-              state: {
-                size: this.storeImgSize,
-                slide: this.storeNbSlide,
-                data: this.storeImgData,
-                intensity: this.state.stateIntensity
+            </div>
+            <PrimaryButton
+              onClick={() => this.inputRef.click()}
+              disabled={this.state.stateImageLoading}
+            >
+              Select Image
+            </PrimaryButton>
+            <PrimaryButton
+              role="link"
+              disabled={!this.state.stateImageLoaded}
+              onClick={() =>
+                navigate("/page-2/", {
+                  state: {
+                    size: this.storeImgSize,
+                    slide: this.storeNbSlide,
+                    data: this.storeImgData,
+                    intensity: this.state.stateIntensity
+                  }
+                })
               }
-            })
-          }
-        >
-          Continue
-        </PrimaryButton>
-        <PrimaryButton
-          disabled={!this.state.statePreviousSessionAvailable}
-          onClick={() => {
-            this.restorePreviousSession();
-            navigate("/page-2/", {
-              state: {
-                size: this.storeImgSize,
-                slide: this.storeNbSlide,
-                data: this.storeImgData,
-                intensity: this.state.stateIntensity
-              }
-            });
-          }}
-        >
-          Restore
-        </PrimaryButton>
-        <div>
-          <PrimaryButton
-            disabled={
-              !this.state.stateImageLoaded || this.state.stateNbSlide.w < 2
-            }
-            onClick={() => {
-              let stateNbSlide = this.state.stateNbSlide;
-              stateNbSlide.w -= 1.0;
-              this.setState({ stateNbSlide });
-              this.setNbSlideW();
-            }}
-          >
-            -
-          </PrimaryButton>
-          Width : {Math.round(this.state.stateNbSlide.w)}
-          <PrimaryButton
-            disabled={!this.state.stateImageLoaded}
-            onClick={() => {
-              let stateNbSlide = this.state.stateNbSlide;
-              stateNbSlide.w += 1.0;
-              this.setState({ stateNbSlide });
-              this.setNbSlideW();
-            }}
-          >
-            +
-          </PrimaryButton>
-        </div>
-        <div>
-          <PrimaryButton
-            disabled={
-              !this.state.stateImageLoaded || this.state.stateNbSlide.h < 2
-            }
-            onClick={() => {
-              let stateNbSlide = this.state.stateNbSlide;
-              stateNbSlide.h -= 1.0;
-              this.setState({ stateNbSlide });
-              this.setNbSlideH();
-            }}
-          >
-            -
-          </PrimaryButton>
-          Height : {Math.round(this.state.stateNbSlide.h)}
-          <PrimaryButton
-            disabled={!this.state.stateImageLoaded}
-            onClick={() => {
-              let stateNbSlide = this.state.stateNbSlide;
-              stateNbSlide.h += 1.0;
-              this.setState({ stateNbSlide });
-              this.setNbSlideH();
-            }}
-          >
-            +
-          </PrimaryButton>
-        </div>
-        <div>
-          <PrimaryButton
-            disabled={
-              !this.state.stateImageLoaded || this.state.stateIntensity < 0.1
-            }
-            onClick={() => {
-              this.setState(prev => ({
-                stateIntensity: prev.stateIntensity - 0.1
-              }));
-            }}
-          >
-            -
-          </PrimaryButton>
-          Intensity on touch :{" "}
-          {Math.round(this.state.stateIntensity * 10.0) / 10.0}
-          <PrimaryButton
-            disabled={
-              !this.state.stateImageLoaded || this.state.stateIntensity > 0.9
-            }
-            onClick={() => {
-              this.setState(prev => ({
-                stateIntensity: prev.stateIntensity + 0.1
-              }));
-            }}
-          >
-            +
-          </PrimaryButton>
-        </div>
-        <div>
-          <Nouislider range={{ min: 0, max: 200 }} start={[0, 100]} tooltips />
-        </div>
-        <div>
-          Size: {Math.round(this.state.stateImg.w)} x{" "}
-          {Math.round(this.state.stateImg.h)}
-        </div>
-        <div>
-          <img
-            width="0"
-            height="0"
-            src=""
-            alt=""
-            ref={elem => (this.imageRef = elem)}
-          />
-        </div>
+            >
+              Continue
+            </PrimaryButton>
+            <PrimaryButton
+              disabled={!this.state.statePreviousSessionAvailable}
+              onClick={() => {
+                this.restorePreviousSession();
+                navigate("/page-2/", {
+                  state: {
+                    size: this.storeImgSize,
+                    slide: this.storeNbSlide,
+                    data: this.storeImgData,
+                    intensity: this.state.stateIntensity
+                  }
+                });
+              }}
+            >
+              Restore
+            </PrimaryButton>
+            <div>
+              <PrimaryButton
+                disabled={
+                  !this.state.stateImageLoaded || this.state.stateNbSlide.w < 2
+                }
+                onClick={() => {
+                  let stateNbSlide = this.state.stateNbSlide;
+                  stateNbSlide.w -= 1.0;
+                  this.setState({ stateNbSlide });
+                  this.setNbSlideW();
+                }}
+              >
+                -
+              </PrimaryButton>
+              Width : {Math.round(this.state.stateNbSlide.w)}
+              <PrimaryButton
+                disabled={!this.state.stateImageLoaded}
+                onClick={() => {
+                  let stateNbSlide = this.state.stateNbSlide;
+                  stateNbSlide.w += 1.0;
+                  this.setState({ stateNbSlide });
+                  this.setNbSlideW();
+                }}
+              >
+                +
+              </PrimaryButton>
+            </div>
+            <div>
+              <PrimaryButton
+                disabled={
+                  !this.state.stateImageLoaded || this.state.stateNbSlide.h < 2
+                }
+                onClick={() => {
+                  let stateNbSlide = this.state.stateNbSlide;
+                  stateNbSlide.h -= 1.0;
+                  this.setState({ stateNbSlide });
+                  this.setNbSlideH();
+                }}
+              >
+                -
+              </PrimaryButton>
+              Height : {Math.round(this.state.stateNbSlide.h)}
+              <PrimaryButton
+                disabled={!this.state.stateImageLoaded}
+                onClick={() => {
+                  let stateNbSlide = this.state.stateNbSlide;
+                  stateNbSlide.h += 1.0;
+                  this.setState({ stateNbSlide });
+                  this.setNbSlideH();
+                }}
+              >
+                +
+              </PrimaryButton>
+            </div>
+            <div>
+              <PrimaryButton
+                disabled={
+                  !this.state.stateImageLoaded ||
+                  this.state.stateIntensity < 0.1
+                }
+                onClick={() => {
+                  this.setState(prev => ({
+                    stateIntensity: prev.stateIntensity - 0.1
+                  }));
+                }}
+              >
+                -
+              </PrimaryButton>
+              Intensity on touch :{" "}
+              {Math.round(this.state.stateIntensity * 10.0) / 10.0}
+              <PrimaryButton
+                disabled={
+                  !this.state.stateImageLoaded ||
+                  this.state.stateIntensity > 0.9
+                }
+                onClick={() => {
+                  this.setState(prev => ({
+                    stateIntensity: prev.stateIntensity + 0.1
+                  }));
+                }}
+              >
+                +
+              </PrimaryButton>
+            </div>
+            <div>
+              <Nouislider
+                range={{ min: 0, max: 200 }}
+                start={[0, 100]}
+                tooltips
+              />
+            </div>
+            <div>
+              Size: {Math.round(this.state.stateImg.w)} x{" "}
+              {Math.round(this.state.stateImg.h)}
+            </div>
+            <div>
+              <img
+                width="0"
+                height="0"
+                src=""
+                alt=""
+                ref={elem => (this.imageRef = elem)}
+              />
+            </div>
+          </div>
+        </Fade>
       </Layout>
     );
   }
