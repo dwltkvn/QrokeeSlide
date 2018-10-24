@@ -64,13 +64,14 @@ class IndexPage extends React.Component {
     window.addEventListener("online", this.updateScripts);
     this.updateScripts();
 
+    this.setState({ stateMounted: true });
     console.log("mounted");
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (!prevState.stateMounted) {
       console.log("set mounted");
-      this.setState({ stateMounted: true });
+      //this.setState({ stateMounted: true });
     }
     console.log("updated");
     console.log(prevState.stateMounted);
