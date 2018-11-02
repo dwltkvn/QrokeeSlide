@@ -33,7 +33,7 @@ const Layout = ({ children, location }) => (
         >
           <html lang="en" />
         </Helmet>
-        <div>{children}</div>
+        <div style={{"height":"100%",border: "5px solid blue",display:"flex"}}>{children}</div>
       </>
     )}
   />

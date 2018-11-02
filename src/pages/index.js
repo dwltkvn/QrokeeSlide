@@ -308,6 +308,45 @@ class IndexPage extends React.Component {
   render() {
     return (
       <Layout>
+        <div style={{border: "5px solid black",
+                     display:"flex",
+                    "flex-direction": "column",
+                     "justify-content":"space-around",
+                     flex:1
+                    }}>
+          <div style={{border: "5px solid blue",display:"flex",
+                    "flex-direction": "row",
+                    "justify-content": "center",}}>
+            <div style={{border: "5px solid blue",display:"inline-block",display:"flex",
+                        "flex-direction": "column"}}>
+            <h1 style={{margin:0}}>
+              {this.props.data.site.siteMetadata.title}
+            </h1>
+            <div style={{"align-self": "flex-end"}}>
+                v{this.props.data.site.siteMetadata.version}</div>
+            </div>
+          </div>
+          <div style={{border: "5px solid blue",
+                     display:"flex",
+                    "flex-direction": "row",
+                    "justify-content": "space-around",
+                      "flex-wrap":'wrap',
+                    }}>
+            <PrimaryButton>Select Image</PrimaryButton>
+            <PrimaryButton>Select Image</PrimaryButton>
+          </div>
+          <h1 style={{border: "5px solid blue",margin:0}}>
+            {this.props.data.site.siteMetadata.title} v{
+              this.props.data.site.siteMetadata.version
+            }
+          </h1>
+        </div>
+      </Layout>
+      
+    );
+    
+    return (
+      <Layout>
         {this.state.stateImageLoading ? <LinearProgress /> : null}
         <h1>
           {this.props.data.site.siteMetadata.title} v{
