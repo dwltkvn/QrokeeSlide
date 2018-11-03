@@ -10,12 +10,11 @@ body {
 
   display: flex;
   /*flex-direction: column;*/
-  
-  border: 5px solid red;
+  /*border: 5px solid red;*/
 }
 
 #___gatsby > div {
-  border: 5px solid yellow;
+  /*border: 5px solid yellow;*/
   /*height:100%;*/
-  flex:1;
+  flex: 1;
 }

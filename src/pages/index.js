@@ -14,11 +14,32 @@ import WebWorkerUtility from "../workers/webWorkerUtility";
 import Worker1 from "../workers/worker1";
 
 import Fade from "@material-ui/core/Fade";
+import { withStyles } from "@material-ui/core/styles";
+
+const styles = theme => ({
+  margedBtn: { margin: theme.spacing.unit * 2 }
+});
 
 const PrimaryButton = ({ children, ...props }) => (
   <Button variant="contained" color="primary" {...props}>
     {children}
   </Button>
+);
+
+const TitleCmpnt = ({ title, version, componentMounted, ...props }) => (
+  <div
+    style={{
+      /*border: "5px solid blue",*/
+      display: "flex",
+      "flex-direction": "column"
+    }}
+  >
+    <h1 style={{ margin: 0 }}>{title}</h1>
+    <div style={{ "align-self": "flex-end" }}>v{version}</div>
+    <div style={{ "align-self": "center" }}>
+      {componentMounted ? <PrimaryButton>Install</PrimaryButton> : null}
+    </div>
+  </div>
 );
 
 class IndexPage extends React.Component {
@@ -306,45 +327,57 @@ class IndexPage extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
     return (
       <Layout>
-        <div style={{border: "5px solid black",
-                     display:"flex",
-                    "flex-direction": "column",
-                     "justify-content":"space-around",
-                     flex:1
-                    }}>
-          <div style={{border: "5px solid blue",display:"flex",
-                    "flex-direction": "row",
-                    "justify-content": "center",}}>
-            <div style={{border: "5px solid blue",display:"inline-block",display:"flex",
-                        "flex-direction": "column"}}>
-            <h1 style={{margin:0}}>
-              {this.props.data.site.siteMetadata.title}
-            </h1>
-            <div style={{"align-self": "flex-end"}}>
-                v{this.props.data.site.siteMetadata.version}</div>
-            </div>
+        <div
+          style={{
+            /*border: "5px solid black",*/
+            display: "flex",
+            "flex-direction": "column",
+            "justify-content": "space-around",
+            flex: 1
+          }}
+        >
+          <div
+            style={{
+              /*border: "5px solid blue",*/
+              display: "flex",
+              "flex-direction": "row",
+              "justify-content": "center"
+            }}
+          >
+            <TitleCmpnt
+              title={this.props.data.site.siteMetadata.title}
+              version={this.props.data.site.siteMetadata.version}
+              componentMounted={false}
+            />
           </div>
-          <div style={{border: "5px solid blue",
-                     display:"flex",
-                    "flex-direction": "row",
-                    "justify-content": "space-around",
-                      "flex-wrap":'wrap',
-                    }}>
-            <PrimaryButton>Select Image</PrimaryButton>
-            <PrimaryButton>Select Image</PrimaryButton>
+          <div
+            style={{
+              border: "5px solid blue",
+              flex:1
+            }}
+          />
+
+          <div
+            style={{
+              /*border: "5px solid blue",*/
+              display: "flex",
+              "flex-direction": "row",
+              "justify-content": "center",
+              "flex-wrap": "wrap"
+            }}
+          >
+            <PrimaryButton className={classes.margedBtn}>
+              Select Image
+            </PrimaryButton>
+            <PrimaryButton className={classes.margedBtn}>Resume</PrimaryButton>
           </div>
-          <h1 style={{border: "5px solid blue",margin:0}}>
-            {this.props.data.site.siteMetadata.title} v{
-              this.props.data.site.siteMetadata.version
-            }
-          </h1>
         </div>
       </Layout>
-      
     );
-    
+
     return (
       <Layout>
         {this.state.stateImageLoading ? <LinearProgress /> : null}
@@ -551,4 +584,4 @@ version
     }
   }
 `;
-export default IndexPage;
+export default withStyles(styles)(IndexPage);
