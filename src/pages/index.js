@@ -356,24 +356,41 @@ class IndexPage extends React.Component {
           <div
             style={{
               border: "5px solid blue",
-              flex:1
+              flex: 2
             }}
           />
-
           <div
             style={{
               /*border: "5px solid blue",*/
               display: "flex",
               "flex-direction": "row",
               "justify-content": "center",
-              "flex-wrap": "wrap"
+              flex: 1
             }}
           >
-            <PrimaryButton className={classes.margedBtn}>
-              Select Image
-            </PrimaryButton>
-            <PrimaryButton className={classes.margedBtn}>Resume</PrimaryButton>
+            <div
+              style={{
+                /*border: "5px solid red",*/
+                display: "flex",
+                "flex-direction": "row",
+                "align-items": "center",
+                "flex-wrap": "wrap"
+              }}
+            >
+              <PrimaryButton className={classes.margedBtn}>
+                Select Image
+              </PrimaryButton>
+              <PrimaryButton className={classes.margedBtn}>
+                Resume
+              </PrimaryButton>
+            </div>
           </div>
+          <div
+            style={{
+              border: "5px solid blue",
+              flex: 1
+            }}
+          />
         </div>
       </Layout>
     );
