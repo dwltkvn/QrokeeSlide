@@ -600,9 +600,14 @@ export const query = graphql`
     site {
       siteMetadata {
         title
-version
+        version
       }
-    }
+    },
+    headerImage: imageSharp(id: { regex: "/art-blur-close-up-89625.jpg/" }) {
+      sizes(maxWidth: 1240) {
+        ...GatsbyImageSharpSizes_tracedSVG
+      }
+    },
   }
 `;
 export default withStyles(styles)(IndexPage);
