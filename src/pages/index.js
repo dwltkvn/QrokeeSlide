@@ -16,6 +16,8 @@ import Worker1 from "../workers/worker1";
 import Fade from "@material-ui/core/Fade";
 import { withStyles } from "@material-ui/core/styles";
 
+import HelpIcon from "@material-ui/icons/Help";
+
 const styles = theme => ({
   margedBtn: { margin: theme.spacing.unit * 2 }
 });
@@ -26,7 +28,7 @@ const PrimaryButton = ({ children, ...props }) => (
   </Button>
 );
 
-const TitleCmpnt = ({ title, version, componentMounted, ...props }) => (
+const TitleCmpnt = ({ title, version, ...props }) => (
   <div
     style={{
       /*border: "5px solid blue",*/
@@ -36,9 +38,6 @@ const TitleCmpnt = ({ title, version, componentMounted, ...props }) => (
   >
     <h1 style={{ margin: 0 }}>{title}</h1>
     <div style={{ "align-self": "flex-end" }}>v{version}</div>
-    <div style={{ "align-self": "center" }}>
-      {componentMounted ? <PrimaryButton>Install</PrimaryButton> : null}
-    </div>
   </div>
 );
 
@@ -350,7 +349,6 @@ class IndexPage extends React.Component {
             <TitleCmpnt
               title={this.props.data.site.siteMetadata.title}
               version={this.props.data.site.siteMetadata.version}
-              componentMounted={false}
             />
           </div>
           <div
@@ -368,22 +366,28 @@ class IndexPage extends React.Component {
               flex: 1
             }}
           >
-            <div
-              style={{
-                /*border: "5px solid red",*/
-                display: "flex",
-                "flex-direction": "row",
-                "align-items": "center",
-                "flex-wrap": "wrap"
-              }}
-            >
-              <PrimaryButton className={classes.margedBtn}>
-                Select Image
-              </PrimaryButton>
-              <PrimaryButton className={classes.margedBtn}>
-                Resume
-              </PrimaryButton>
-            </div>
+            <Fade in={this.state.stateMounted}>
+              <div
+                style={{
+                  /*border: "5px solid red",*/
+                  display: "flex",
+                  "flex-direction": "row",
+                  "align-items": "center",
+                  "flex-wrap": "wrap"
+                }}
+              >
+                <PrimaryButton className={classes.margedBtn}>
+                  Select Image
+                </PrimaryButton>
+                <PrimaryButton className={classes.margedBtn}>
+                  Resume
+                </PrimaryButton>
+                <PrimaryButton className={classes.margedBtn}>
+                  Install
+                </PrimaryButton>
+                <HelpIcon />
+              </div>
+            </Fade>
           </div>
           <div
             style={{
