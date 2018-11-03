@@ -28,8 +28,6 @@ module.exports = {
         showSpinner: true
       }
     },
-    "gatsby-plugin-sharp",
-    "gatsby-transformer-sharp",
     {
       resolve: `gatsby-source-filesystem`,
       options: {
