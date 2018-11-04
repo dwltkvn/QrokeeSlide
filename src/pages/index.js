@@ -5,11 +5,12 @@ import { graphql } from "gatsby";
 import Layout from "../components/layout";
 
 import Button from "@material-ui/core/Button";
+import Tooltip from '@material-ui/core/Tooltip';
 import Fade from "@material-ui/core/Fade";
 import { withStyles } from "@material-ui/core/styles";
 
 import HelpIcon from "@material-ui/icons/Help";
-import ImgHero from "../images/gatsby-icon.png";
+//import ImgHero from "../images/gatsby-icon.png";
 
 const styles = theme => ({
   margedBtn: { margin: theme.spacing.unit * 2 }
@@ -38,15 +39,25 @@ class IndexPage extends React.Component {
   constructor(props) {
     super(props);
     //this.handleEvent = this.handleEvent.bind(this);
+    this.onFilesSelected = this.onFilesSelected.bind(this);
+    this.onFileLoaded = this.onFileLoaded.bind(this);
 
     this.state = {
       stateMounted: false,
+      statePreviousSessionAvailable: false,
+      stateImageLoading: false,
+      stateImageLoaded: false,
     };
+    
+    this.storedImage = { w:0, h:0, data:0 };
   }
 
   componentDidMount() {
+    const localStorageState = localStorage.getItem("savedSession");
+    if (localStorageState)
+      this.setState({ statePreviousSessionAvailable: true });
+    
     this.setState({ stateMounted: true });
-    console.log(ImgHero);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -57,6 +68,27 @@ class IndexPage extends React.Component {
     //window.removeEventListener("event", this.handleEvent);
   }
 
+  onFilesSelected(e) {
+    this.setState({ stateImageLoading: true });
+    var reader = new FileReader();
+    reader.onload = this.onFileLoaded;
+    reader.readAsDataURL(this.inputRef.files[0]);
+    //reader.readAsBinaryString(this.inputRef.files[0]);
+  }
+  
+   onFileLoaded(e) {
+    //this.imgData = e.target.result;
+    this.setState( {stateImageLoading:false} );
+     
+    const img = new Image();
+    img.onload = () => {
+      this.storedImage = { w: img.width, h: img.height, data: e.target.result };
+      localStorage.setItem("savedSession", JSON.stringify(this.storedImage));
+      this.setState( {stateImageLoaded:true} );
+    };
+    img.src = e.target.result;
+   }
+  
   render() {
     const { classes } = this.props;
     return (
@@ -87,7 +119,7 @@ class IndexPage extends React.Component {
             style={{
               border: "5px solid blue",
               flex: 2,
-                backgroundImage: "url('"+ImgHero+"')",
+                backgroundImage: "url('"+this.storedImage.data+"')",
                 backgroundSize: "cover",
             }}
           >
@@ -111,16 +143,26 @@ class IndexPage extends React.Component {
                   "flexWrap": "wrap"
                 }}
               >
-                <PrimaryButton className={classes.margedBtn}>
+                <input
+              id="uploadInput"
+              type="file"
+              name="myFiles"
+              onChange={() => this.onFilesSelected()}
+              ref={elem => (this.inputRef = elem)}
+              style={{ display: "none" }}
+            />
+                <PrimaryButton className={classes.margedBtn} onClick={() => this.inputRef.click()}>
                   Select Image
                 </PrimaryButton>
-                <PrimaryButton className={classes.margedBtn}>
+                <PrimaryButton className={classes.margedBtn} disabled={!this.state.statePreviousSessionAvailable}>
                   Resume
                 </PrimaryButton>
                 <PrimaryButton className={classes.margedBtn}>
                   Install
                 </PrimaryButton>
-                <HelpIcon />
+                <Tooltip title="Install this app on your mobile!">
+                  <HelpIcon />
+                </Tooltip>
               </div>
             </Fade>
           </div>
