@@ -164,10 +164,10 @@ class IndexPage extends React.Component {
                 <Tooltip title="Install this app on your mobile!">
                   <HelpIcon />
                 </Tooltip>
+                <ProgressStepper/>
               </div>
             </Fade>
           </div>
-          <ProgressStepper/>
           <div
             style={{
               /*border: "5px solid blue",*/
