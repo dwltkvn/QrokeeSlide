@@ -3,6 +3,7 @@ import React from "react";
 import { graphql } from "gatsby";
 
 import Layout from "../components/layout";
+import ProgressStepper from "../components/progressStepper";
 
 import Button from "@material-ui/core/Button";
 import Tooltip from '@material-ui/core/Tooltip';
@@ -13,7 +14,10 @@ import HelpIcon from "@material-ui/icons/Help";
 //import ImgHero from "../images/gatsby-icon.png";
 
 const styles = theme => ({
-  margedBtn: { margin: theme.spacing.unit * 2 }
+  margedBtn: { margin: theme.spacing.unit * 2,},
+  heroBorder: { borderTop: "5px solid "+theme.palette.primary.main,
+                borderBottom: "5px solid "+theme.palette.primary.main}
+  //heroBorder : { borderStyle: "solid", borderWidth: "5px"}
 });
 
 const PrimaryButton = ({ children, ...props }) => (
@@ -90,7 +94,7 @@ class IndexPage extends React.Component {
    }
   
   render() {
-    const { classes } = this.props;
+    const { classes } = this.props;   
     return (
       <Layout>
         <div
@@ -116,11 +120,12 @@ class IndexPage extends React.Component {
             />
           </div>
           <div
+            className={classes.heroBorder}
             style={{
-              border: "5px solid blue",
+              ...classes.heroBorder,
               flex: 2,
-                backgroundImage: "url('"+this.storedImage.data+"')",
-                backgroundSize: "cover",
+              backgroundImage: "url('"+this.storedImage.data+"')",
+              backgroundSize: "cover",
             }}
           >
           </div>
@@ -143,14 +148,10 @@ class IndexPage extends React.Component {
                   "flexWrap": "wrap"
                 }}
               >
-                <input
-              id="uploadInput"
-              type="file"
-              name="myFiles"
-              onChange={() => this.onFilesSelected()}
-              ref={elem => (this.inputRef = elem)}
-              style={{ display: "none" }}
-            />
+                <input id="uploadInput" type="file" name="myFiles"
+                       onChange={() => this.onFilesSelected()}
+                       ref={elem => (this.inputRef = elem)}
+                       style={{ display: "none" }} />
                 <PrimaryButton className={classes.margedBtn} onClick={() => this.inputRef.click()}>
                   Select Image
                 </PrimaryButton>
@@ -166,9 +167,10 @@ class IndexPage extends React.Component {
               </div>
             </Fade>
           </div>
+          <ProgressStepper/>
           <div
             style={{
-              border: "5px solid blue",
+              /*border: "5px solid blue",*/
               flex: 1
             }}
           />
