@@ -1,5 +1,5 @@
 import React from "react";
-import { navigate } from "gatsby";
+//import { navigate } from "gatsby";
 import { graphql } from "gatsby";
 
 import Layout from "../components/layout";
@@ -9,6 +9,7 @@ import Fade from "@material-ui/core/Fade";
 import { withStyles } from "@material-ui/core/styles";
 
 import HelpIcon from "@material-ui/icons/Help";
+import ImgHero from "../images/gatsby-icon.png";
 
 const styles = theme => ({
   margedBtn: { margin: theme.spacing.unit * 2 }
@@ -45,6 +46,7 @@ class IndexPage extends React.Component {
 
   componentDidMount() {
     this.setState({ stateMounted: true });
+    console.log(ImgHero);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -84,9 +86,12 @@ class IndexPage extends React.Component {
           <div
             style={{
               border: "5px solid blue",
-              flex: 2
+              flex: 2,
+                backgroundImage: "url('"+ImgHero+"')",
+                backgroundSize: "cover",
             }}
-          />
+          >
+          </div>
           <div
             style={{
               /*border: "5px solid blue",*/
