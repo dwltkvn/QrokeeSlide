@@ -130,20 +130,26 @@ class IndexPage extends React.Component {
           />
           <div
             style={{
-              /*border: "5px solid blue",*/
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              flex: 1
+              border: "5px solid blue"
+              //display: "flex"
+              //flexDirection: "row",
+              //justifyContent: "center",
+              //flex: 1
             }}
           >
             <Fade in={this.state.stateMounted}>
-              <div>
+              <div
+                style={{
+                  border: "5px solid green"
+                  //display: "flex"
+                  //flexDirection: "column"
+                }}
+              >
                 <div
                   style={{
-                    //border: "5px solid red",
+                    border: "5px solid red",
                     display: "flex",
-                    flexDirection: "row",
+                    //flexDirection: "row",
                     //alignItems: "center",
                     justifyContent: "center",
                     flexWrap: "wrap"
@@ -176,15 +182,13 @@ class IndexPage extends React.Component {
                     <HelpIcon />
                   </Tooltip>
                 </div>
-                <div>
-                  <ProgressStepper />
-                </div>
+                <ProgressStepper />
               </div>
             </Fade>
           </div>
           <div
             style={{
-              /*border: "5px solid blue",*/
+              //border: "5px solid blue",
               flex: 1
             }}
           />
