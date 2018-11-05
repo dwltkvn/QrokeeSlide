@@ -129,25 +129,29 @@ class IndexPage extends React.Component {
             }}
           />
           <div
-            style={{
-              border: "5px solid blue"
-              //display: "flex"
-              //flexDirection: "row",
-              //justifyContent: "center",
-              //flex: 1
-            }}
+            style={
+              {
+                //border: "5px solid blue"
+                //display: "flex"
+                //flexDirection: "row",
+                //justifyContent: "center",
+                //flex: 1
+              }
+            }
           >
             <Fade in={this.state.stateMounted}>
               <div
-                style={{
-                  border: "5px solid green"
-                  //display: "flex"
-                  //flexDirection: "column"
-                }}
+                style={
+                  {
+                    //border: "5px solid green",
+                    //display: "flex"
+                    //flexDirection: "column"
+                  }
+                }
               >
                 <div
                   style={{
-                    border: "5px solid red",
+                    //border: "5px solid red",
                     display: "flex",
                     //flexDirection: "row",
                     //alignItems: "center",
