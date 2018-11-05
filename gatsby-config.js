@@ -1,7 +1,7 @@
 module.exports = {
   siteMetadata: {
     title: "Qrokee Slider",
-    version: "1.0.15"
+    version: "1.0.16"
   },
   plugins: [
     "gatsby-plugin-react-helmet",
@@ -14,7 +14,7 @@ module.exports = {
         background_color: "#7986cb",
         theme_color: "#3f51b5",
         display: "standalone",
-        orientation: "landscape",
+        orientation: "any",
         icon: "src/images/gatsby-icon.png" // This path is relative to the root of the site.
       }
     },

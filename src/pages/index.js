@@ -28,7 +28,7 @@ const PrimaryButton = ({ children, ...props }) => (
   </Button>
 );
 
-const TitleCmpnt = ({ title, version, ...props }) => (
+const TitleCmpnt = ({ title, version, installed, standalone, ...props }) => (
   <div
     style={{
       /*border: "5px solid blue",*/
@@ -37,7 +37,10 @@ const TitleCmpnt = ({ title, version, ...props }) => (
     }}
   >
     <h1 style={{ margin: 0 }}>{title}</h1>
-    <div style={{ alignSelf: "flex-end" }}>v{version}</div>
+    <div style={{ alignSelf: "flex-end" }}>v{version}
+      {installed ? <span> (Installed)</span>:null}
+      {standalone ? <span> (Standalone)</span>:null}
+    </div>
   </div>
 );
 
@@ -56,6 +59,8 @@ class IndexPage extends React.Component {
       stateImageLoading: false,
       stateImageLoaded: false,
       stateDisplayInstallButton: false,
+      stateAppInstalled:false,
+      stateAppStandalone:false,
     };
 
     this.storedImage = { w: 0, h: 0, data: 0 };
@@ -70,6 +75,10 @@ class IndexPage extends React.Component {
     this.setState({ stateMounted: true });
     
     window.addEventListener("beforeinstallprompt", this.handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', (evt) => { this.setState( {stateAppInstalled:true} ) });
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      this.setState( {stateAppStandalone:true} );
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {}
@@ -139,12 +148,13 @@ class IndexPage extends React.Component {
             <TitleCmpnt
               title={this.props.data.site.siteMetadata.title}
               version={this.props.data.site.siteMetadata.version}
+              installed={this.state.stateAppInstalled}
+              standalone={this.state.stateAppStandalone}
             />
           </div>
           <div
             className={classes.heroBorder}
             style={{
-              ...classes.heroBorder,
               flex: 2,
               backgroundImage: "url('" + this.storedImage.data + "')",
               backgroundSize: "cover"
