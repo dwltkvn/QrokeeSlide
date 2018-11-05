@@ -182,8 +182,8 @@ class IndexPage extends React.Component {
                   <PrimaryButton className={classes.margedBtn}>
                     Install
                   </PrimaryButton>
-                  <Tooltip title="Install this app on your mobile!">
-                    <HelpIcon />
+                  <Tooltip disableFocusListener disableTouchListener title="Install this app on your mobile!">
+                      <HelpIcon />
                   </Tooltip>
                 </div>
                 <ProgressStepper />

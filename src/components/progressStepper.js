@@ -9,18 +9,16 @@ import Hidden from "@material-ui/core/Hidden";
 
 import withWidth from "@material-ui/core/withWidth";
 
+const ProgressStep = ["Select Image", "Image Processing", "Navigation"];
+
 const DesktopProgressStepper = props => {
   return (
     <Stepper activeStep={0}>
-      <Step>
-        <StepLabel>Select Image</StepLabel>
-      </Step>
-      <Step>
-        <StepLabel>Image Processing</StepLabel>
-      </Step>
-      <Step>
-        <StepLabel>Navigation</StepLabel>
-      </Step>
+      {ProgressStep.map((step, idx) => (
+        <Step key={idx}>
+          <StepLabel>{step}</StepLabel>
+        </Step>
+      ))}
     </Stepper>
   );
 };
@@ -29,10 +27,10 @@ const MobileProgressStepper = props => {
   return (
     <MobileStepper
       variant="dots"
-      steps={3}
+      steps={ProgressStep.length}
       activeStep={0}
       position="static"
-      style={{ justifyContent: "center" }}
+      style={{ justifyContent: "center", backgroundColor: "#FFFFFF" }}
     />
   );
 };
@@ -58,9 +56,6 @@ class ProgressStepper extends React.Component {
   */
 
   render() {
-    const { classes } = this.props;
-    //const { someState } = this.state;
-
     return (
       <>
         <Hidden xsDown>
