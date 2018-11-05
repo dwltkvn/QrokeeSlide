@@ -87,7 +87,7 @@ class IndexPage extends React.Component {
   handleAppInstallation() {
     this.deferredPrompt.prompt();
     this.deferredPrompt.userChoice.then( (result) => {
-      if(result.outcome === 'accept') {
+      if(result.outcome === 'accepted') {
         this.setState( {stateDisplayInstallButton : false} );
       }
       this.deferredPrompt = null;
