@@ -47,15 +47,19 @@ class IndexPage extends React.Component {
     //this.handleEvent = this.handleEvent.bind(this);
     this.onFilesSelected = this.onFilesSelected.bind(this);
     this.onFileLoaded = this.onFileLoaded.bind(this);
+    this.handleAppInstallation = this.handleAppInstallation.bind(this);
+    this.handleBeforeInstallPrompt = this.handleBeforeInstallPrompt.bind(this);    
 
     this.state = {
       stateMounted: false,
       statePreviousSessionAvailable: false,
       stateImageLoading: false,
-      stateImageLoaded: false
+      stateImageLoaded: false,
+      stateDisplayInstallButton: false,
     };
 
     this.storedImage = { w: 0, h: 0, data: 0 };
+    this.deferredPrompt = null;
   }
 
   componentDidMount() {
@@ -64,12 +68,30 @@ class IndexPage extends React.Component {
       this.setState({ statePreviousSessionAvailable: true });
 
     this.setState({ stateMounted: true });
+    
+    window.addEventListener("beforeinstallprompt", this.handleBeforeInstallPrompt);
   }
 
   componentDidUpdate(prevProps, prevState) {}
 
   componentWillUnmount() {
-    //window.removeEventListener("event", this.handleEvent);
+    window.removeEventListener("beforeinstallprompt", this.handleBeforeInstallPrompt);
+  }
+  
+  handleBeforeInstallPrompt(e) {
+    e.preventDefault();
+    this.deferredPrompt = e;
+    this.setState( { stateDisplayInstallButton : true});
+  }
+  
+  handleAppInstallation() {
+    this.deferredPrompt.prompt();
+    this.deferredPrompt.userChoice.then( (result) => {
+      if(result.outcome === 'accept') {
+        this.setState( {stateDisplayInstallButton : false} );
+      }
+      this.deferredPrompt = null;
+    })
   }
 
   onFilesSelected(e) {
@@ -179,12 +201,17 @@ class IndexPage extends React.Component {
                   >
                     Resume
                   </PrimaryButton>
-                  <PrimaryButton className={classes.margedBtn}>
-                    Install
-                  </PrimaryButton>
-                  <Tooltip disableFocusListener disableTouchListener title="Install this app on your mobile!">
-                      <HelpIcon />
-                  </Tooltip>
+                  {
+                    !this.state.stateDisplayInstallButton ? null:
+                    <>
+                      <PrimaryButton className={classes.margedBtn} onClick = { () => this.handleAppInstallation() }>
+                        Install
+                      </PrimaryButton>
+                      <Tooltip disableFocusListener disableTouchListener title="Install this app on your mobile!">
+                        <HelpIcon />
+                      </Tooltip>
+                    </>
+                  }
                 </div>
                 <ProgressStepper />
               </div>

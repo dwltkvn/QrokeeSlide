@@ -11,8 +11,8 @@ module.exports = {
         name: "qrokee-slider",
         short_name: "qslider",
         start_url: "/",
-        background_color: "#663399",
-        theme_color: "#663399",
+        background_color: "#7986cb",
+        theme_color: "#3f51b5",
         display: "standalone",
         orientation: "landscape",
         icon: "src/images/gatsby-icon.png" // This path is relative to the root of the site.
