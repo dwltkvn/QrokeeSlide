@@ -220,7 +220,8 @@ class IndexPage extends React.Component {
                   >
                     Resume
                   </PrimaryButton>
-                  {!this.state.stateDisplayInstallButton ? null : (
+                  {!this.state.stateDisplayInstallButton ||
+                  this.state.stateAppInstalled ? null : (
                     <div>
                       <PrimaryButton
                         className={classes.margedBtn}
