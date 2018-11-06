@@ -37,9 +37,10 @@ const TitleCmpnt = ({ title, version, installed, standalone, ...props }) => (
     }}
   >
     <h1 style={{ margin: 0 }}>{title}</h1>
-    <div style={{ alignSelf: "flex-end" }}>v{version}
-      {installed ? <span> (Installed)</span>:null}
-      {standalone ? <span> (Standalone)</span>:null}
+    <div style={{ alignSelf: "flex-end" }}>
+      v{version}
+      {installed ? <span> (Installed)</span> : null}
+      {standalone ? <span> (Standalone)</span> : null}
     </div>
   </div>
 );
@@ -51,7 +52,7 @@ class IndexPage extends React.Component {
     this.onFilesSelected = this.onFilesSelected.bind(this);
     this.onFileLoaded = this.onFileLoaded.bind(this);
     this.handleAppInstallation = this.handleAppInstallation.bind(this);
-    this.handleBeforeInstallPrompt = this.handleBeforeInstallPrompt.bind(this);    
+    this.handleBeforeInstallPrompt = this.handleBeforeInstallPrompt.bind(this);
 
     this.state = {
       stateMounted: false,
@@ -59,8 +60,8 @@ class IndexPage extends React.Component {
       stateImageLoading: false,
       stateImageLoaded: false,
       stateDisplayInstallButton: false,
-      stateAppInstalled:false,
-      stateAppStandalone:false,
+      stateAppInstalled: false,
+      stateAppStandalone: false
     };
 
     this.storedImage = { w: 0, h: 0, data: 0 };
@@ -73,34 +74,42 @@ class IndexPage extends React.Component {
       this.setState({ statePreviousSessionAvailable: true });
 
     this.setState({ stateMounted: true });
-    
-    window.addEventListener("beforeinstallprompt", this.handleBeforeInstallPrompt);
-    window.addEventListener('appinstalled', (evt) => { this.setState( {stateAppInstalled:true} ) });
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      this.setState( {stateAppStandalone:true} );
+
+    window.addEventListener(
+      "beforeinstallprompt",
+      this.handleBeforeInstallPrompt
+    );
+    window.addEventListener("appinstalled", evt => {
+      this.setState({ stateAppInstalled: true });
+    });
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+      this.setState({ stateAppStandalone: true });
     }
   }
 
   componentDidUpdate(prevProps, prevState) {}
 
   componentWillUnmount() {
-    window.removeEventListener("beforeinstallprompt", this.handleBeforeInstallPrompt);
+    window.removeEventListener(
+      "beforeinstallprompt",
+      this.handleBeforeInstallPrompt
+    );
   }
-  
+
   handleBeforeInstallPrompt(e) {
     e.preventDefault();
     this.deferredPrompt = e;
-    this.setState( { stateDisplayInstallButton : true});
+    this.setState({ stateDisplayInstallButton: true });
   }
-  
+
   handleAppInstallation() {
     this.deferredPrompt.prompt();
-    this.deferredPrompt.userChoice.then( (result) => {
-      if(result.outcome === 'accepted') {
-        this.setState( {stateDisplayInstallButton : false} );
+    this.deferredPrompt.userChoice.then(result => {
+      if (result.outcome === "accepted") {
+        this.setState({ stateDisplayInstallButton: false });
       }
       this.deferredPrompt = null;
-    })
+    });
   }
 
   onFilesSelected(e) {
@@ -211,17 +220,23 @@ class IndexPage extends React.Component {
                   >
                     Resume
                   </PrimaryButton>
-                  {
-                    !this.state.stateDisplayInstallButton ? null:
-                    <>
-                      <PrimaryButton className={classes.margedBtn} onClick = { () => this.handleAppInstallation() }>
+                  {!this.state.stateDisplayInstallButton ? null : (
+                    <div>
+                      <PrimaryButton
+                        className={classes.margedBtn}
+                        onClick={() => this.handleAppInstallation()}
+                      >
                         Install
                       </PrimaryButton>
-                      <Tooltip disableFocusListener disableTouchListener title="Install this app on your mobile!">
+                      <Tooltip
+                        disableFocusListener
+                        disableTouchListener
+                        title="Install this app on your mobile!"
+                      >
                         <HelpIcon />
                       </Tooltip>
-                    </>
-                  }
+                    </div>
+                  )}
                 </div>
                 <ProgressStepper />
               </div>
