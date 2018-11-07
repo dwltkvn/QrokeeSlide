@@ -1,6 +1,7 @@
 import React from "react";
 //import { navigate } from "gatsby";
 import { graphql } from "gatsby";
+import { navigate } from "gatsby";
 
 import Layout from "../components/layout";
 import ProgressStepper from "../components/progressStepper";
@@ -129,6 +130,8 @@ class IndexPage extends React.Component {
       this.storedImage = { w: img.width, h: img.height, data: e.target.result };
       localStorage.setItem("savedSession", JSON.stringify(this.storedImage));
       this.setState({ stateImageLoaded: true });
+
+      navigate("/preview/", { state: { image: this.storedImage } });
     };
     img.src = e.target.result;
   }
