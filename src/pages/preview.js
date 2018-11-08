@@ -24,12 +24,15 @@ const localStyles = {
 };
 */
 
+  
+
 class PreviewPage extends React.Component {
   constructor(props) {
     super(props);
     //this.handleEvent = this.handleEvent.bind(this);
     this.state = {
-      stateImageLoaded: false
+      stateImageLoaded: false,
+      stateExternalScriptLoaded: false,
     };
   }
 
@@ -39,11 +42,10 @@ class PreviewPage extends React.Component {
       !this.props.location.state.hasOwnProperty("image") ||
       this.props.location.state.image === undefined
     ) {
-      console.log("No location state");
+      // there is no image fowarded from welcome page ; is there an image in localStorage ?
       const localStorageSession = localStorage.getItem("savedSession");
       if(localStorageSession)
       {
-        console.log("Session available");
         this.storedImage = JSON.parse(localStorageSession);
         this.setState({ stateImageLoaded: true });
       }
@@ -53,6 +55,22 @@ class PreviewPage extends React.Component {
       this.setState({ stateImageLoaded: true });
       this.storedImage = this.props.location.state.image;
     }
+    
+    //window.addEventListener("online", PreviewPage.updateScripts);
+    PreviewPage.updateScripts( () => {
+      const IJS = window.IJS;
+      this.setState( {stateExternalScriptLoaded:true} );
+      IJS.Image.load(this.storedImage.data)
+      .then(image => {
+        let grey = image.grey();
+        grey.flipX();
+        grey.flipY();
+         this.storedImage.data = grey.toDataURL();
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    });
   }
 
   componentWillUnmount() {
@@ -113,4 +131,41 @@ TemplateComponent.staticStyles = {
 };
 */
 
+PreviewPage.updateScripts = (cb) => {
+    if (!window.navigator.onLine) {
+      return;
+    }
+     if (!PreviewPage.isIJSLoaded()) {
+      return PreviewPage.loadIJS().then(PreviewPage.updateScripts);
+    }
+    else
+    {
+      // when script is loaded, then call the callback
+      cb();
+    }
+  }
+   PreviewPage.isIJSLoaded = () => {
+    return !!window.IJS;
+  }
+   PreviewPage.loadIJS = () => {
+     console.log("loadijs");
+    return PreviewPage.addElem("script", {
+      async: true,
+      src: "https://www.lactame.com/lib/image-js/0.21.2/image.min.js"
+    });
+  }
+   PreviewPage.addElem = (tag, attrs) => {
+    return new Promise((resolve, reject) => {
+      var el = document.createElement(tag);
+      el.onload = resolve;
+      el.onerror = reject;
+       var keys = Object.keys(attrs);
+       for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        el.setAttribute(key, attrs[key]);
+      }
+       document.head.appendChild(el);
+    });
+  }
+   
 export default withStyles(styles)(PreviewPage);
