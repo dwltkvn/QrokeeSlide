@@ -24,8 +24,6 @@ const localStyles = {
 };
 */
 
-  
-
 class PreviewPage extends React.Component {
   constructor(props) {
     super(props);
@@ -48,6 +46,7 @@ class PreviewPage extends React.Component {
       {
         this.storedImage = JSON.parse(localStorageSession);
         this.setState({ stateImageLoaded: true });
+        this.setState({ stateData: this.storedImage.data });
       }
       else
         this.setState({ stateImageLoaded: false });
@@ -56,6 +55,7 @@ class PreviewPage extends React.Component {
       this.storedImage = this.props.location.state.image;
     }
     
+    //PreviewPage.updateScripts( () => this.processImage() );
     //window.addEventListener("online", PreviewPage.updateScripts);
     PreviewPage.updateScripts( () => {
       const IJS = window.IJS;
@@ -65,7 +65,8 @@ class PreviewPage extends React.Component {
         let grey = image.grey();
         grey.flipX();
         grey.flipY();
-         this.storedImage.data = grey.toDataURL();
+        this.storedImage.data = grey.toDataURL();
+        this.setState( {stateData:this.storedImage.data} );
       })
       .catch(err => {
         console.log(err);
@@ -105,7 +106,7 @@ class PreviewPage extends React.Component {
                 flex: 1,
                 //height:"100px",
                 backgroundImage:
-                  "url('" + this.storedImage.data + "')",
+                  "url('" + this.state.stateData + "')",
                 backgroundSize: "cover"
               }}
             />
