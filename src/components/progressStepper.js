@@ -11,9 +11,9 @@ import withWidth from "@material-ui/core/withWidth";
 
 const ProgressStep = ["Select Image", "Image Processing", "Navigation"];
 
-const DesktopProgressStepper = props => {
+const DesktopProgressStepper = ({...props}) => {
   return (
-    <Stepper activeStep={0}>
+    <Stepper {...props}>
       {ProgressStep.map((step, idx) => (
         <Step key={idx}>
           <StepLabel>{step}</StepLabel>
@@ -59,7 +59,7 @@ class ProgressStepper extends React.Component {
     return (
       <>
         <Hidden xsDown>
-          <DesktopProgressStepper />
+          <DesktopProgressStepper {...this.props}/>
         </Hidden>
         <Hidden smUp>
           <MobileProgressStepper />

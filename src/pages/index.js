@@ -220,6 +220,7 @@ class IndexPage extends React.Component {
                   <PrimaryButton
                     className={classes.margedBtn}
                     disabled={!this.state.statePreviousSessionAvailable}
+                    onClick={ () => navigate("/preview/") }
                   >
                     Resume
                   </PrimaryButton>
@@ -242,16 +243,10 @@ class IndexPage extends React.Component {
                     </div>
                   )}
                 </div>
-                <ProgressStepper />
+                <ProgressStepper activeStep={0}/>
               </div>
             </Fade>
           </div>
-          <div
-            style={{
-              //border: "5px solid blue",
-              flex: 1
-            }}
-          />
         </div>
       </Layout>
     );

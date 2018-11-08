@@ -2,14 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 
-import BottomNavigation from "@material-ui/core/BottomNavigation";
-import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
-
-import RestoreIcon from "@material-ui/icons/Restore";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import LocationOnIcon from "@material-ui/icons/LocationOn";
-
 import Layout from "../components/layout";
+import ProgressStepper from "../components/progressStepper";
 
 const styles = theme => ({
   margedBtn: { margin: theme.spacing.unit * 2 },
@@ -45,9 +39,19 @@ class PreviewPage extends React.Component {
       !this.props.location.state.hasOwnProperty("image") ||
       this.props.location.state.image === undefined
     ) {
-      this.setState({ stateImageLoaded: false });
+      console.log("No location state");
+      const localStorageSession = localStorage.getItem("savedSession");
+      if(localStorageSession)
+      {
+        console.log("Session available");
+        this.storedImage = JSON.parse(localStorageSession);
+        this.setState({ stateImageLoaded: true });
+      }
+      else
+        this.setState({ stateImageLoaded: false });
     } else {
       this.setState({ stateImageLoaded: true });
+      this.storedImage = this.props.location.state.image;
     }
   }
 
@@ -83,30 +87,11 @@ class PreviewPage extends React.Component {
                 flex: 1,
                 //height:"100px",
                 backgroundImage:
-                  "url('" + this.props.location.state.image.data + "')",
+                  "url('" + this.storedImage.data + "')",
                 backgroundSize: "cover"
               }}
             />
-
-            <BottomNavigation
-              value={0}
-              showLabels
-              style={{
-                //height: "200px"
-                //border: "5px solid blue",
-                justifyContent: "center"
-              }}
-            >
-              <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
-              <BottomNavigationAction
-                label="Favorites"
-                icon={<FavoriteIcon />}
-              />
-              <BottomNavigationAction
-                label="Nearby"
-                icon={<LocationOnIcon />}
-              />
-            </BottomNavigation>
+            <ProgressStepper activeStep={1}/>
           </div>
         )}
       </Layout>
@@ -115,7 +100,7 @@ class PreviewPage extends React.Component {
 }
 
 PreviewPage.propTypes = {
-  classes: PropTypes.object.isRequired
+  //classes: PropTypes.object.isRequired
 };
 
 PreviewPage.defaultProps = {
