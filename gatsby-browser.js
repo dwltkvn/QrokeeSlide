@@ -19,3 +19,11 @@ export const onServiceWorkerInstalled = ({serviceWorker}) => {
 export const onServiceWorkerUpdateFound = ({serviceWorker}) => {
   console.log('sw update found')
 }
+
+export const onServiceWorkerActive =  ({serviceWorker}) => {
+  console.log('sw active')
+}
+
+export const onServiceWorkerRedundant = ({serviceWorker}) => {
+  console.log('sw redundant')
+}
