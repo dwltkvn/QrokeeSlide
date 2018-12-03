@@ -93,7 +93,8 @@ class IndexPage extends React.Component {
     }
     
     fetch('./.netlify/functions/version')
-      .then(response => console.log(response) )
+      .then(response => response.text() )
+      .then(data => console.log(data))
       .catch(error => console.log(error) );
   }
 
