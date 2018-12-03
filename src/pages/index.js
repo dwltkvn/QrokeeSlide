@@ -93,14 +93,7 @@ class IndexPage extends React.Component {
     }
     
     fetch('./.netlify/functions/version')
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Something went wrong ...');
-        }
-      })
-      .then(data => console.log(data) )
+      .then(response => console.log(response) )
       .catch(error => console.log(error) );
   }
 
