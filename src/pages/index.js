@@ -94,7 +94,11 @@ class IndexPage extends React.Component {
     
     fetch('./.netlify/functions/version')
       .then(response => response.text() )
-      .then(data => console.log(data))
+      .then(data => {
+                      if(this.props.data.site.siteMetadata.version!==data)
+                        this.setState({stateAppUpdateAvailable:true});
+                      return true;
+                    })
       .catch(error => console.log(error) );
   }
 
