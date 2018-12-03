@@ -1,6 +1,6 @@
 const lambda = async (event, context) => {
   //console.log("H");
-  return { statusCode: 200, body: { major: 1, minor:0, patch:21, revision:0 } };
+  return { statusCode: 200, body: "1.0.21.0" };
 };
 
 //lambda().then(data => console.log(data));
