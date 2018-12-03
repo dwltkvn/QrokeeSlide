@@ -1,7 +1,7 @@
 module.exports = {
   siteMetadata: {
     title: "Qrokee Slider",
-    version: "1.0.24"
+    version: "1.0.25"
   },
   plugins: [
     "gatsby-plugin-react-helmet",
