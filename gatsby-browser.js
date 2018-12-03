@@ -8,6 +8,8 @@
 
 import "./src/styles/global.css";
 
+var global_kdo_update = false;
+
 export const onClientEntry = () => {
   console.log("We've started!")
 }
@@ -17,7 +19,8 @@ export const onServiceWorkerInstalled = ({serviceWorker}) => {
 }
 
 export const onServiceWorkerUpdateFound = ({serviceWorker}) => {
-  console.log('sw update found')
+  console.log('sw update found');
+  global_kdo_update = true;
 }
 
 export const onServiceWorkerActive =  ({serviceWorker}) => {

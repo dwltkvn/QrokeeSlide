@@ -29,7 +29,7 @@ const PrimaryButton = ({ children, ...props }) => (
   </Button>
 );
 
-const TitleCmpnt = ({ title, version, installed, standalone, ...props }) => (
+const TitleCmpnt = ({ title, version, installed, standalone, update, ...props }) => (
   <div
     style={{
       /*border: "5px solid blue",*/
@@ -42,6 +42,7 @@ const TitleCmpnt = ({ title, version, installed, standalone, ...props }) => (
       v{version}
       {installed ? <span> (Installed)</span> : null}
       {standalone ? <span> (Standalone)</span> : null}
+      {update ? <span> (Updatable)</span> : null}
     </div>
   </div>
 );
@@ -62,7 +63,8 @@ class IndexPage extends React.Component {
       stateImageLoaded: false,
       stateDisplayInstallButton: false,
       stateAppInstalled: false,
-      stateAppStandalone: false
+      stateAppStandalone: false,
+      stateAppUpdateAvailable: false,
     };
 
     this.storedImage = { w: 0, h: 0, data: 0 };
@@ -85,6 +87,9 @@ class IndexPage extends React.Component {
     });
     if (window.matchMedia("(display-mode: standalone)").matches) {
       this.setState({ stateAppStandalone: true });
+    }
+    if(window.global_kdo_update) {
+      this.setState({ stateAppUpdateAvailable : true })
     }
   }
 
@@ -162,6 +167,7 @@ class IndexPage extends React.Component {
               version={this.props.data.site.siteMetadata.version}
               installed={this.state.stateAppInstalled}
               standalone={this.state.stateAppStandalone}
+              update={this.state.stateAppUpdateAvailable}
             />
           </div>
           <div
