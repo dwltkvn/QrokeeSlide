@@ -8,13 +8,11 @@
 
 import "./src/styles/global.css";
 
-var global_kdo_update = true;
-export default window.global_kdo_update;
+window.global_kdo_update = false;
 
 export const onClientEntry = () => {
   console.log("We've started!");
-  //window.dispatchEvent(new Event('evtClientEntry'))
-  //setTimeout(function(){ window.dispatchEvent(new Event('evtClientEntry')); }, 3000);
+  //window.global_kdo_update = true; // for test purpose
 };
 
 export const onServiceWorkerInstalled = ({ serviceWorker }) => {
@@ -22,11 +20,7 @@ export const onServiceWorkerInstalled = ({ serviceWorker }) => {
 };
 
 export const onServiceWorkerUpdateFound = ({ serviceWorker }) => {
-  setTimeout(function() {
-    window.dispatchEvent(new Event("evtServiceWorkerUpdateFound"));
-  }, 10000);
-  //console.log('sw update found');
-  //global_kdo_update = true;
+  window.global_kdo_update = true;
 };
 
 export const onServiceWorkerActive = ({ serviceWorker }) => {
