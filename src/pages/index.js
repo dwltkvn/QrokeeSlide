@@ -29,7 +29,14 @@ const PrimaryButton = ({ children, ...props }) => (
   </Button>
 );
 
-const TitleCmpnt = ({ title, version, installed, standalone, update, ...props }) => (
+const TitleCmpnt = ({
+  title,
+  version,
+  installed,
+  standalone,
+  update,
+  ...props
+}) => (
   <div
     style={{
       /*border: "5px solid blue",*/
@@ -64,7 +71,7 @@ class IndexPage extends React.Component {
       stateDisplayInstallButton: false,
       stateAppInstalled: false,
       stateAppStandalone: false,
-      stateAppUpdateAvailable: false,
+      stateAppUpdateAvailable: false
     };
 
     this.storedImage = { w: 0, h: 0, data: 0 };
@@ -88,10 +95,15 @@ class IndexPage extends React.Component {
     if (window.matchMedia("(display-mode: standalone)").matches) {
       this.setState({ stateAppStandalone: true });
     }
-    if(window.global_kdo_update) {
-      this.setState({ stateAppUpdateAvailable : true })
+    if (window.global_kdo_update) {
+      this.setState({ stateAppUpdateAvailable: true });
     }
-    
+
+    window.addEventListener("evtServiceWorkerUpdateFound", evt => {
+      this.setState({ stateAppUpdateAvailable: true });
+    });
+
+    /*
     fetch('./.netlify/functions/version')
       .then(response => response.text() )
       .then(data => {
@@ -99,7 +111,7 @@ class IndexPage extends React.Component {
                         this.setState({stateAppUpdateAvailable:true});
                       return true;
                     })
-      .catch(error => console.log(error) );
+      .catch(error => console.log(error) );*/
   }
 
   componentDidUpdate(prevProps, prevState) {}
@@ -235,7 +247,7 @@ class IndexPage extends React.Component {
                   <PrimaryButton
                     className={classes.margedBtn}
                     disabled={!this.state.statePreviousSessionAvailable}
-                    onClick={ () => navigate("/preview/") }
+                    onClick={() => navigate("/preview/")}
                   >
                     Resume
                   </PrimaryButton>
@@ -258,7 +270,7 @@ class IndexPage extends React.Component {
                     </div>
                   )}
                 </div>
-                <ProgressStepper activeStep={0}/>
+                <ProgressStepper activeStep={0} />
               </div>
             </Fade>
           </div>

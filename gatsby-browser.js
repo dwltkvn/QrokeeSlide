@@ -8,25 +8,31 @@
 
 import "./src/styles/global.css";
 
-var global_kdo_update = false;
+var global_kdo_update = true;
+export default window.global_kdo_update;
 
 export const onClientEntry = () => {
-  console.log("We've started!")
-}
+  console.log("We've started!");
+  //window.dispatchEvent(new Event('evtClientEntry'))
+  //setTimeout(function(){ window.dispatchEvent(new Event('evtClientEntry')); }, 3000);
+};
 
-export const onServiceWorkerInstalled = ({serviceWorker}) => {
-  console.log('sw installed')
-}
+export const onServiceWorkerInstalled = ({ serviceWorker }) => {
+  console.log("sw installed");
+};
 
-export const onServiceWorkerUpdateFound = ({serviceWorker}) => {
-  console.log('sw update found');
-  global_kdo_update = true;
-}
+export const onServiceWorkerUpdateFound = ({ serviceWorker }) => {
+  setTimeout(function() {
+    window.dispatchEvent(new Event("evtServiceWorkerUpdateFound"));
+  }, 10000);
+  //console.log('sw update found');
+  //global_kdo_update = true;
+};
 
-export const onServiceWorkerActive =  ({serviceWorker}) => {
-  console.log('sw active')
-}
+export const onServiceWorkerActive = ({ serviceWorker }) => {
+  console.log("sw active");
+};
 
-export const onServiceWorkerRedundant = ({serviceWorker}) => {
-  console.log('sw redundant')
-}
+export const onServiceWorkerRedundant = ({ serviceWorker }) => {
+  console.log("sw redundant");
+};
