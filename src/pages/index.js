@@ -121,6 +121,8 @@ class IndexPage extends React.Component {
       "beforeinstallprompt",
       this.handleBeforeInstallPrompt
     );
+
+    window.removeEventListener("evtServiceWorkerUpdateFound");
   }
 
   handleBeforeInstallPrompt(e) {
