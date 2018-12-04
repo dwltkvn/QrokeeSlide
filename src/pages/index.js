@@ -105,8 +105,6 @@ class IndexPage extends React.Component {
   
   checkForUpdate()
   {
-    console.log("checkForUpdate");
-    console.log(window.global_kdo_update);
     const stateAppUpdateAvailable = window.global_kdo_update;
     this.setState({ stateAppUpdateAvailable });
     if(!stateAppUpdateAvailable)
