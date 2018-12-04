@@ -62,7 +62,8 @@ class IndexPage extends React.Component {
     this.onFileLoaded = this.onFileLoaded.bind(this);
     this.handleAppInstallation = this.handleAppInstallation.bind(this);
     this.handleBeforeInstallPrompt = this.handleBeforeInstallPrompt.bind(this);
-
+    this.checkForUpdate = this.checkForUpdate.bind(this);
+    
     this.state = {
       stateMounted: false,
       statePreviousSessionAvailable: false,
@@ -95,9 +96,21 @@ class IndexPage extends React.Component {
     if (window.matchMedia("(display-mode: standalone)").matches) {
       this.setState({ stateAppStandalone: true });
     }
-    if (window.global_kdo_update) {
+    /*if (window.global_kdo_update) {
       this.setState({ stateAppUpdateAvailable: true });
-    }
+    }*/
+    
+    this.checkForUpdate();
+  }
+  
+  checkForUpdate()
+  {
+    console.log("checkForUpdate");
+    console.log(window.global_kdo_update);
+    const stateAppUpdateAvailable = window.global_kdo_update;
+    this.setState({ stateAppUpdateAvailable });
+    if(!stateAppUpdateAvailable)
+      setTimeout(this.checkForUpdate, 1000);
   }
 
   componentDidUpdate(prevProps, prevState) {}

@@ -8,11 +8,13 @@
 
 import "./src/styles/global.css";
 
-window.global_kdo_update = false;
-
 export const onClientEntry = () => {
+  window.global_kdo_update = false;
   console.log("We've started!");
-  //window.global_kdo_update = true; // for test purpose
+  //window.global_kdo_update = true; // for test purpose  
+  /*setTimeout(function() {
+    window.global_kdo_update = true;
+  }, 2000);*/
 };
 
 export const onServiceWorkerInstalled = ({ serviceWorker }) => {
