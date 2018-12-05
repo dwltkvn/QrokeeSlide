@@ -65,7 +65,7 @@ const TitleCmpnt = ({
       </div>
     </div>
     <div style={{ flex: 1 }} />
-    {!install ? (
+    {install ? (
       <Tooltip title="Install this app on your device">
         <IconButton
           aria-label="Install this app on your device"
