@@ -5,13 +5,15 @@ import { navigate } from "gatsby";
 
 import Layout from "../components/layout";
 import ProgressStepper from "../components/progressStepper";
+import Fade from "@material-ui/core/Fade";
 
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
-import Fade from "@material-ui/core/Fade";
 import { withStyles } from "@material-ui/core/styles";
 
-import HelpIcon from "@material-ui/icons/Help";
+import RefreshIcon from "@material-ui/icons/Refresh";
+import InstallIcon from "@material-ui/icons/AddToQueue";
+import IconButton from "@material-ui/core/IconButton";
 //import ImgHero from "../images/gatsby-icon.png";
 
 const styles = theme => ({
@@ -35,22 +37,47 @@ const TitleCmpnt = ({
   installed,
   standalone,
   update,
+  install,
   ...props
 }) => (
   <div
     style={{
       /*border: "5px solid blue",*/
       display: "flex",
-      flexDirection: "column"
+      flexDirection: "row",
+      flex: 1
     }}
   >
-    <h1 style={{ margin: 0 }}>{title}</h1>
-    <div style={{ alignSelf: "flex-end" }}>
-      v{version}
-      {installed ? <span> (Installed)</span> : null}
-      {standalone ? <span> (Standalone)</span> : null}
-      {update ? <span> (Updatable)</span> : null}
+    <div style={{ flex: 1 }} />
+    <div
+      style={{
+        /*border: "5px solid blue",*/
+        display: "flex",
+        flexDirection: "column"
+      }}
+    >
+      <h1 style={{ margin: 0 }}>{title}</h1>
+      <div style={{ alignSelf: "flex-end" }}>
+        v{version}
+        {installed ? <span> (Installed)</span> : null}
+        {standalone ? <span> (Standalone)</span> : null}
+      </div>
     </div>
+    <div style={{ flex: 1 }} />
+    {install ? (
+      <Tooltip title="Install this app on your device">
+        <IconButton aria-label="Install this app on your device">
+          <InstallIcon />
+        </IconButton>
+      </Tooltip>
+    ) : null}
+    {update ? (
+      <Tooltip title="Update available, refresh to use it">
+        <IconButton aria-label="Update available, refresh to use it">
+          <RefreshIcon />
+        </IconButton>
+      </Tooltip>
+    ) : null}
   </div>
 );
 
@@ -63,7 +90,7 @@ class IndexPage extends React.Component {
     this.handleAppInstallation = this.handleAppInstallation.bind(this);
     this.handleBeforeInstallPrompt = this.handleBeforeInstallPrompt.bind(this);
     this.checkForUpdate = this.checkForUpdate.bind(this);
-    
+
     this.state = {
       stateMounted: false,
       statePreviousSessionAvailable: false,
@@ -99,16 +126,14 @@ class IndexPage extends React.Component {
     /*if (window.global_kdo_update) {
       this.setState({ stateAppUpdateAvailable: true });
     }*/
-    
+
     this.checkForUpdate();
   }
-  
-  checkForUpdate()
-  {
+
+  checkForUpdate() {
     const stateAppUpdateAvailable = window.global_kdo_update;
     this.setState({ stateAppUpdateAvailable });
-    if(!stateAppUpdateAvailable)
-      setTimeout(this.checkForUpdate, 1000);
+    if (!stateAppUpdateAvailable) setTimeout(this.checkForUpdate, 1000);
   }
 
   componentDidUpdate(prevProps, prevState) {}
@@ -186,6 +211,10 @@ class IndexPage extends React.Component {
               installed={this.state.stateAppInstalled}
               standalone={this.state.stateAppStandalone}
               update={this.state.stateAppUpdateAvailable}
+              install={
+                this.state.stateDisplayInstallButton &&
+                !this.state.stateAppInstalled
+              }
             />
           </div>
           <div
@@ -248,24 +277,6 @@ class IndexPage extends React.Component {
                   >
                     Resume
                   </PrimaryButton>
-                  {!this.state.stateDisplayInstallButton ||
-                  this.state.stateAppInstalled ? null : (
-                    <div>
-                      <PrimaryButton
-                        className={classes.margedBtn}
-                        onClick={() => this.handleAppInstallation()}
-                      >
-                        Install
-                      </PrimaryButton>
-                      <Tooltip
-                        disableFocusListener
-                        disableTouchListener
-                        title="Install this app on your mobile!"
-                      >
-                        <HelpIcon />
-                      </Tooltip>
-                    </div>
-                  )}
                 </div>
                 <ProgressStepper activeStep={0} />
               </div>
