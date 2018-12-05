@@ -38,6 +38,7 @@ const TitleCmpnt = ({
   standalone,
   update,
   install,
+  cbInstall,
   ...props
 }) => (
   <div
@@ -64,9 +65,12 @@ const TitleCmpnt = ({
       </div>
     </div>
     <div style={{ flex: 1 }} />
-    {install ? (
+    {!install ? (
       <Tooltip title="Install this app on your device">
-        <IconButton aria-label="Install this app on your device">
+        <IconButton
+          aria-label="Install this app on your device"
+          onClick={cbInstall}
+        >
           <InstallIcon />
         </IconButton>
       </Tooltip>
@@ -90,6 +94,7 @@ class IndexPage extends React.Component {
     this.handleAppInstallation = this.handleAppInstallation.bind(this);
     this.handleBeforeInstallPrompt = this.handleBeforeInstallPrompt.bind(this);
     this.checkForUpdate = this.checkForUpdate.bind(this);
+    this.handleTest = this.handleTest.bind(this);
 
     this.state = {
       stateMounted: false,
@@ -161,6 +166,10 @@ class IndexPage extends React.Component {
     });
   }
 
+  handleTest() {
+    console.log("OK");
+  }
+
   onFilesSelected(e) {
     this.setState({ stateImageLoading: true });
     var reader = new FileReader();
@@ -215,6 +224,7 @@ class IndexPage extends React.Component {
                 this.state.stateDisplayInstallButton &&
                 !this.state.stateAppInstalled
               }
+              cbInstall={this.handleAppInstallation}
             />
           </div>
           <div
