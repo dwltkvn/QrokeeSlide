@@ -64,7 +64,7 @@ const TitleCmpnt = ({
         {standalone ? <span> (Standalone)</span> : null}
       </div>
     </div>
-    <div style={{ flex: 1 }} />
+    <div style={{ /*border: "5px solid blue",*/ display:"flex", flex: 1, justifyContent:'space-around', alignItems:'center' }} >
     {install ? (
       <Tooltip title="Install this app on your device">
         <IconButton
@@ -82,6 +82,7 @@ const TitleCmpnt = ({
         </IconButton>
       </Tooltip>
     ) : null}
+    </div>
   </div>
 );
 
