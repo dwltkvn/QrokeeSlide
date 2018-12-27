@@ -136,7 +136,7 @@ class IndexPage extends React.Component {
   checkForUpdate() {
     const stateAppUpdateAvailable = window.global_kdo_update;
     this.setState({ stateAppUpdateAvailable });
-    //if (!stateAppUpdateAvailable) setTimeout(this.checkForUpdate, 1000); //FIX: cancel this on unmount ?
+    if (!stateAppUpdateAvailable) setTimeout(this.checkForUpdate, 1000); //FIX: cancel this on unmount ?
   }
 
   componentDidUpdate(prevProps, prevState) {}

@@ -78,39 +78,12 @@ class PreviewPage extends React.Component {
       this.storedImage = this.props.location.state.image;
     }
     
-    this.setState( {stateData:this.storedImage.data} );
-    
-    //PreviewPage.updateScripts( function(){ console.log("cb update");} );
-    //window.addEventListener("online", PreviewPage.updateScripts);
-    /*PreviewPage.updateScripts( () => {
-      console.log("run update script cb");
-      const IJS = window.IJS;
-      this.setState( {stateExternalScriptLoaded:true} );
-      IJS.Image.load(this.storedImage.data)
-      .then(image => {
-        // Type: ("luma709" | "luma601" | "maximum" | "minimum" | "average" | "minmax" | "red" | "green" | "blue" | "cyan" | "magenta" | "yellow" | "black" | "hue" | "saturation" | "lightness")
-        let grey=image.grey({algorithm:'minmax'});
-        let mask=grey.mask();
-        let result = grey.rgba8().paintMasks(mask, {color:'orange'});
-        this.storedImage.data = result.toDataURL();
-        
-        this.setState( {stateData:this.storedImage.data} );
-      })
-      .catch(err => {
-        console.log(err);
-      });
-    });*/
+    this.setState( {stateData:this.storedImage.data} );    
   }
 
   componentWillUnmount() {
     //window.removeEventListener("event", this.handleEvent);
   }
-
-  /*
-  handleEvent(event) {
-    ...
-  }
-  */
 
   preview(grayAlgoName, thresholdAlgoName)
   {
@@ -129,14 +102,22 @@ class PreviewPage extends React.Component {
       IJS.Image.load(this.storedImage.data)
       .then(image => {
         let grey=image.grey({algorithm:grayAlgoName});
+        let grad = grey.morphologicalGradient();
+        let level = grad.level();
+        
         if(thresholdAlgoName===undefined || thresholdAlgoName==="none")
         {
-          let proceededImage = grey.toDataURL();
+          let proceededImage = level.toDataURL();
           this.setState( {stateData:proceededImage} );
           return;
         }
-        let mask=grey.mask({algorithm:thresholdAlgoName});
-        let result = grey.rgba8().paintMasks(mask, {color:'orange'});
+        
+        //let proceededImage2 = grad.toDataURL();
+        //this.setState( {stateData:proceededImage2} );
+        //return;
+        
+        let mask=level.mask({algorithm:thresholdAlgoName, threshold:0.5, invert:false});
+        let result = level.rgba8().paintMasks(mask, {color:'orange'});
         let proceededImage = result.toDataURL();
         
         this.setState( {stateData:proceededImage} );
@@ -170,7 +151,8 @@ class PreviewPage extends React.Component {
                 backgroundImage:
                   "url('" + this.state.stateData + "')",
                 backgroundSize: "contain",
-                backgroundRepeat: "no-repeat"
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center", 
               }}
             />
             <div
