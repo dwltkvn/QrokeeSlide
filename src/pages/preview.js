@@ -5,6 +5,13 @@ import { withStyles } from "@material-ui/core/styles";
 import Layout from "../components/layout";
 import ProgressStepper from "../components/progressStepper";
 
+
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
+import Button from "@material-ui/core/Button";
+
 const styles = theme => ({
   margedBtn: { margin: theme.spacing.unit * 2 },
   heroBorder: {
@@ -13,6 +20,9 @@ const styles = theme => ({
   }
   //heroBorder : { borderStyle: "solid", borderWidth: "5px"}
 });
+
+const grayAlgo = ["none", "luma709" , "luma601" , "maximum" , "minimum" , "average" , "minmax" , "red" , "green" , "blue" , "cyan" , "magenta" , "yellow" , "black" , "hue" , "saturation" , "lightness" ];
+const thresholdAlgo = ['none', 'huang','intermodes','isodata','li','maxentropy','mean','minerror','minimum','moments','otsu','percentile','renyientropy','shanbhag','triangle','yen'];
 /*
 const localStyles = {
   className1: {
@@ -31,10 +41,19 @@ class PreviewPage extends React.Component {
     this.state = {
       stateImageLoaded: false,
       stateExternalScriptLoaded: false,
+      age: '',
     };
   }
+  
+  handleChange = event => {
+    console.log(event.target.name);
+    console.log(event.target.value);
+    this.setState({ [event.target.name]: event.target.value });
+  };
 
   componentDidMount() {
+    console.log(this.props.location.state.image.w );
+    console.log(this.props.location.state.image.h );
     if (
       this.props.location.state === null ||
       !this.props.location.state.hasOwnProperty("image") ||
@@ -49,29 +68,38 @@ class PreviewPage extends React.Component {
         this.setState({ stateData: this.storedImage.data });
       }
       else
+      {
+        console.log("not loaded");
         this.setState({ stateImageLoaded: false });
+      }
     } else {
+      console.log("fowarded stored image");
       this.setState({ stateImageLoaded: true });
       this.storedImage = this.props.location.state.image;
     }
     
-    //PreviewPage.updateScripts( () => this.processImage() );
+    this.setState( {stateData:this.storedImage.data} );
+    
+    //PreviewPage.updateScripts( function(){ console.log("cb update");} );
     //window.addEventListener("online", PreviewPage.updateScripts);
-    PreviewPage.updateScripts( () => {
+    /*PreviewPage.updateScripts( () => {
+      console.log("run update script cb");
       const IJS = window.IJS;
       this.setState( {stateExternalScriptLoaded:true} );
       IJS.Image.load(this.storedImage.data)
       .then(image => {
-        let grey = image.grey();
-        grey.flipX();
-        grey.flipY();
-        this.storedImage.data = grey.toDataURL();
+        // Type: ("luma709" | "luma601" | "maximum" | "minimum" | "average" | "minmax" | "red" | "green" | "blue" | "cyan" | "magenta" | "yellow" | "black" | "hue" | "saturation" | "lightness")
+        let grey=image.grey({algorithm:'minmax'});
+        let mask=grey.mask();
+        let result = grey.rgba8().paintMasks(mask, {color:'orange'});
+        this.storedImage.data = result.toDataURL();
+        
         this.setState( {stateData:this.storedImage.data} );
       })
       .catch(err => {
         console.log(err);
       });
-    });
+    });*/
   }
 
   componentWillUnmount() {
@@ -84,6 +112,40 @@ class PreviewPage extends React.Component {
   }
   */
 
+  preview(grayAlgoName, thresholdAlgoName)
+  {
+    console.log(`algo:${grayAlgoName} ${thresholdAlgoName}`);
+    
+    if(grayAlgoName===undefined || grayAlgoName==="none")
+    {
+      this.setState( {stateData:this.storedImage.data} );
+      return;
+    }
+    
+    PreviewPage.updateScripts( () => {
+      console.log("run update script cb");
+      const IJS = window.IJS;
+      this.setState( {stateExternalScriptLoaded:true} );
+      IJS.Image.load(this.storedImage.data)
+      .then(image => {
+        let grey=image.grey({algorithm:grayAlgoName});
+        if(thresholdAlgoName===undefined || thresholdAlgoName==="none")
+        {
+          let proceededImage = grey.toDataURL();
+          this.setState( {stateData:proceededImage} );
+          return;
+        }
+        let mask=grey.mask({algorithm:thresholdAlgoName});
+        let result = grey.rgba8().paintMasks(mask, {color:'orange'});
+        let proceededImage = result.toDataURL();
+        
+        this.setState( {stateData:proceededImage} );
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    });
+  }
   render() {
     const { classes } = this.props;
     //const { someState } = this.state;
@@ -107,9 +169,51 @@ class PreviewPage extends React.Component {
                 //height:"100px",
                 backgroundImage:
                   "url('" + this.state.stateData + "')",
-                backgroundSize: "cover"
+                backgroundSize: "contain",
+                backgroundRepeat: "no-repeat"
               }}
             />
+            <div
+                  style={{
+                    //border: "5px solid red",
+                    display: "flex",
+                    //flexDirection: "row",
+                    //alignItems: "center",
+                    justifyContent: "center",
+                    flexWrap: "wrap"
+                  }}
+                >
+               <form className={classes.root} autoComplete="off">
+                <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="age-simple">Gray Algo</InputLabel>
+                <Select
+                  value={this.state.stateGreyAlgo}
+                  onChange={this.handleChange}
+                  inputProps={{ name: 'stateGreyAlgo', id: 'gray-algo-name', }}
+                >
+                  {
+                    grayAlgo.map( (e,i) => <MenuItem value={e} key={i}>{e}</MenuItem>)
+                  }
+              </Select>
+                 </FormControl>
+                  <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="age-simple">Threshold Algo</InputLabel>
+              <Select
+                  value={this.state.stateThresholdAlgo}
+                  onChange={this.handleChange}
+                  inputProps={{ name: 'stateThresholdAlgo', id: 'threshold-algo-name', }}
+                >
+                  {
+                    thresholdAlgo.map( (e,i) => <MenuItem value={e} key={i}>{e}</MenuItem>)
+                  }
+              </Select>
+            </FormControl>
+          </form>
+              
+              <Button variant="contained" color="primary" onClick={ () => this.preview(this.state.stateGreyAlgo, this.state.stateThresholdAlgo)}>
+    Preview
+  </Button>
+                </div>
             <ProgressStepper activeStep={1}/>
           </div>
         )}
@@ -132,30 +236,34 @@ TemplateComponent.staticStyles = {
 };
 */
 
-PreviewPage.updateScripts = (cb) => {
+  PreviewPage.updateScripts = (cb) => {
     if (!window.navigator.onLine) {
+      console.log("not online");
       return;
     }
-     if (!PreviewPage.isIJSLoaded()) {
-      return PreviewPage.loadIJS().then(PreviewPage.updateScripts);
+    if (!PreviewPage.isIJSLoaded()) {
+      console.log("try to load ijs");
+      return PreviewPage.loadIJS().then( () => PreviewPage.updateScripts(cb));
     }
     else
     {
       // when script is loaded, then call the callback
+      console.log("call cb");
       cb();
     }
   }
-   PreviewPage.isIJSLoaded = () => {
+  
+  PreviewPage.isIJSLoaded = () => {
     return !!window.IJS;
   }
-   PreviewPage.loadIJS = () => {
+  PreviewPage.loadIJS = () => {
      console.log("loadijs");
     return PreviewPage.addElem("script", {
       async: true,
       src: "https://www.lactame.com/lib/image-js/0.21.2/image.min.js"
     });
   }
-   PreviewPage.addElem = (tag, attrs) => {
+  PreviewPage.addElem = (tag, attrs) => {
     return new Promise((resolve, reject) => {
       var el = document.createElement(tag);
       el.onload = resolve;

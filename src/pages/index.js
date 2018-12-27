@@ -119,10 +119,7 @@ class IndexPage extends React.Component {
 
     this.setState({ stateMounted: true });
 
-    window.addEventListener(
-      "beforeinstallprompt",
-      this.handleBeforeInstallPrompt
-    );
+    window.addEventListener( "beforeinstallprompt", this.handleBeforeInstallPrompt );
     window.addEventListener("appinstalled", evt => {
       this.setState({ stateAppInstalled: true });
     });
@@ -139,16 +136,13 @@ class IndexPage extends React.Component {
   checkForUpdate() {
     const stateAppUpdateAvailable = window.global_kdo_update;
     this.setState({ stateAppUpdateAvailable });
-    if (!stateAppUpdateAvailable) setTimeout(this.checkForUpdate, 1000);
+    //if (!stateAppUpdateAvailable) setTimeout(this.checkForUpdate, 1000); //FIX: cancel this on unmount ?
   }
 
   componentDidUpdate(prevProps, prevState) {}
 
   componentWillUnmount() {
-    window.removeEventListener(
-      "beforeinstallprompt",
-      this.handleBeforeInstallPrompt
-    );
+    window.removeEventListener( "beforeinstallprompt", this.handleBeforeInstallPrompt );
   }
 
   handleBeforeInstallPrompt(e) {
