@@ -176,7 +176,6 @@ class IndexPage extends React.Component {
 
   onFileLoaded(e) {
     //this.imgData = e.target.result;
-    console.log(window.jQuery2.fn.jquery);
     
     this.setState({ stateImageLoading: false });
 
