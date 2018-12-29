@@ -29,6 +29,7 @@ const Layout = ({ children, location }) => (
           ]}
         >
           <html lang="en" />
+          <script type="text/javascript" src="https://unpkg.com/jquery@3.2.1/dist/jquery.min.js"></script>
         </Helmet>
         <div
           style={{

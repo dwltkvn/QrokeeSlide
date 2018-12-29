@@ -113,6 +113,7 @@ class IndexPage extends React.Component {
   }
 
   componentDidMount() {
+    
     const localStorageState = localStorage.getItem("savedSession");
     if (localStorageState)
       this.setState({ statePreviousSessionAvailable: true });
@@ -175,6 +176,8 @@ class IndexPage extends React.Component {
 
   onFileLoaded(e) {
     //this.imgData = e.target.result;
+    console.log(window.jQuery2.fn.jquery);
+    
     this.setState({ stateImageLoading: false });
 
     const img = new Image();
@@ -192,6 +195,7 @@ class IndexPage extends React.Component {
     const { classes } = this.props;
     return (
       <Layout>
+        <script type="text/javascript" src="https://unpkg.com/jquery@3.2.1/dist/jquery.min.js"></script>
         <div
           style={{
             /*border: "5px solid black",*/
